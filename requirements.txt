@@ -1,0 +1,18 @@
+# Data collection
+requests==2.31.0
+pandas==2.1.4
+yfinance==0.2.37
+sec-edgar-downloader==5.0.2
+
+# Machine learning
+scikit-learn==1.4.0
+numpy==1.26.4
+
+# Visualization / Dashboard
+streamlit==1.32.0
+plotly==5.19.0
+matplotlib==3.8.3
+
+# Utilities
+python-dotenv==1.0.1
+tqdm==4.66.2

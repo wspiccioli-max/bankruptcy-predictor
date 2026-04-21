@@ -1,0 +1,31 @@
+ticker,name,sector,bankrupt,company_size
+ENRNQ,Enron Corp,Energy,1,Large
+LEHMQ,Lehman Brothers,Financials,1,Small
+GM,General Motors (old),Consumer Discretionary,1,Small
+SHLDQ,Sears Holdings,Consumer Discretionary,1,Mid
+RSHCQ,RadioShack,Consumer Discretionary,1,Mid
+CCTYQ,Circuit City,Consumer Discretionary,1,Large
+BLOKQ,Blockbuster,Consumer Discretionary,1,Large
+KMART,Kmart,Consumer Staples,1,Large
+WCOM,WorldCom / MCI,Telecom,1,Large
+WAMUQ,Washington Mutual,Financials,1,Large
+CHTRQ,Charter Communications (old),Telecom,1,Large
+PCRXQ,Pactera (Nortel Networks),Technology,1,Small
+NORX,Nortel Networks,Technology,1,Small
+AERAQ,American Airlines (old),Industrials,1,Large
+DALRQ,Delta Air Lines (old),Industrials,1,Large
+AAPL,Apple Inc,Technology,0,Large
+MSFT,Microsoft Corp,Technology,0,Large
+GOOGL,Alphabet Inc,Technology,0,Large
+AMZN,Amazon.com,Consumer Discretionary,0,Large
+JPM,JPMorgan Chase,Financials,0,Large
+JNJ,Johnson & Johnson,Healthcare,0,Large
+XOM,ExxonMobil,Energy,0,Large
+WMT,Walmart,Consumer Staples,0,Large
+VZ,Verizon Communications,Telecom,0,Large
+GE,General Electric,Industrials,0,Large
+BA,Boeing Co,Industrials,0,Large
+DAL,Delta Air Lines (new),Industrials,0,Large
+T,AT&T,Telecom,0,Large
+CVS,CVS Health,Consumer Staples,0,Large
+MRK,Merck & Co,Healthcare,0,Large

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Environment
+.env
+.venv/
+venv/
+
+# Data — raw downloads are large and can be re-fetched
+data/raw/
+
+# Trained models — can be rebuilt by running train_models.py
+*.pkl
+
+# macOS
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+

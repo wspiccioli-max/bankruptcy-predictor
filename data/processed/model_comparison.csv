@@ -1,0 +1,4 @@
+Model,Accuracy,ROC-AUC,Sample N
+Logistic Regression,50.0%,0.511,24
+Altman Z-Score,66.7%,0.200,6
+Fraud Risk Score,62.5%,0.611,24
