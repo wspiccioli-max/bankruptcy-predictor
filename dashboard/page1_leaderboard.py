@@ -1,192 +1,189 @@
 """
-Page 1 — Bankruptcy Risk Leaderboard
+Page 1 — Live S&P 500 Bankruptcy Risk Leaderboard
 
-Shows all companies ranked by their logistic regression bankruptcy probability.
-Users can filter by sector and company size to narrow the view.
+Shows every S&P 500 company ranked by the logistic regression bankruptcy
+probability, using the most recent SEC filing (10-K or 10-Q) that EDGAR has.
+
+Key features:
+  - "Data As Of" column: the fiscal-period-end date of the filing we used
+  - "Δ Since Prior Filing" column: how the risk changed quarter-over-quarter
+  - Sector and risk-level filters
+  - Sortable by biggest risk increase (most useful view for forward-looking use)
 """
 
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
-import streamlit as st
 from pathlib import Path
 
-DATA_PATH = Path(__file__).parent.parent / "data/processed/predictions.csv"
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import streamlit as st
+
+ROOT = Path(__file__).parent.parent
+SP500_PATH       = ROOT / "data/processed/sp500_predictions.csv"
+HISTORICAL_PATH  = ROOT / "data/processed/predictions.csv"
 
 
-@st.cache_data
-def load_data() -> pd.DataFrame:
-    return pd.read_csv(DATA_PATH)
+@st.cache_data(ttl=3600)  # refresh every hour within a Streamlit Cloud session
+def load_sp500() -> pd.DataFrame:
+    if not SP500_PATH.exists():
+        return pd.DataFrame()
+    return pd.read_csv(SP500_PATH)
 
 
-def risk_color(prob: float) -> str:
-    """Map a bankruptcy probability to a traffic-light color."""
-    if prob >= 0.65:
-        return "#e74c3c"   # red
-    elif prob >= 0.40:
-        return "#f39c12"   # amber
-    else:
-        return "#27ae60"   # green
-
-
-def risk_label(prob: float) -> str:
-    if prob >= 0.65:
-        return "🔴 High"
-    elif prob >= 0.40:
-        return "🟡 Medium"
-    else:
-        return "🟢 Low"
+def risk_color(p: float) -> str:
+    if pd.isna(p):    return "#95a5a6"
+    if p >= 0.65:     return "#e74c3c"
+    if p >= 0.40:     return "#f39c12"
+    return "#27ae60"
 
 
 def render():
-    st.title("🏆 Bankruptcy Risk Leaderboard")
-    st.caption(
-        "Companies ranked by logistic regression bankruptcy probability. "
-        "Use the filters on the left to narrow the view."
-    )
+    st.title("🏆 S&P 500 Bankruptcy Risk Leaderboard")
 
-    df = load_data()
+    df = load_sp500()
+    if df.empty:
+        st.error(
+            "No S&P 500 predictions file found.\n\n"
+            "Run `python refresh_sp500.py` from the project root to generate it."
+        )
+        return
+
+    df = df[df["data_available"] == True].copy()
+
+    refresh_ts = df["refresh_utc"].iloc[0] if "refresh_utc" in df.columns else "unknown"
+    st.caption(
+        f"Live scoring of {len(df)} S&P 500 companies. "
+        f"**Data refreshed:** `{refresh_ts}` · "
+        "Model: Logistic Regression trained on 30 historical bankruptcies. "
+        "Δ shows quarter-over-quarter change in bankruptcy probability."
+    )
 
     # ── Sidebar filters ───────────────────────────────────────────────────────
     st.sidebar.markdown("### Filters")
 
     sectors = ["All"] + sorted(df["sector"].dropna().unique().tolist())
-    selected_sector = st.sidebar.selectbox("Sector", sectors)
+    sel_sector = st.sidebar.selectbox("Sector", sectors)
 
-    sizes = ["All"] + sorted(df["company_size"].dropna().unique().tolist())
-    selected_size = st.sidebar.selectbox("Company Size", sizes)
-
-    show_only = st.sidebar.radio(
-        "Show",
-        ["All companies", "Bankrupt only", "Healthy only"],
+    risk_levels = st.sidebar.multiselect(
+        "Risk level",
+        ["🔴 High", "🟡 Medium", "🟢 Low"],
+        default=["🔴 High", "🟡 Medium", "🟢 Low"],
     )
+
+    sort_options = {
+        "Current bankruptcy probability (highest first)": ("current_prob", False),
+        "Biggest risk INCREASE this quarter":              ("delta_prob",  False),
+        "Biggest risk DECREASE this quarter":              ("delta_prob",  True),
+        "Ticker (A–Z)":                                    ("ticker",      True),
+    }
+    sort_label = st.sidebar.radio("Sort by", list(sort_options.keys()))
+    sort_col, sort_asc = sort_options[sort_label]
 
     # ── Apply filters ─────────────────────────────────────────────────────────
-    filtered = df.copy()
-    if selected_sector != "All":
-        filtered = filtered[filtered["sector"] == selected_sector]
-    if selected_size != "All":
-        filtered = filtered[filtered["company_size"] == selected_size]
-    if show_only == "Bankrupt only":
-        filtered = filtered[filtered["bankrupt"] == 1]
-    elif show_only == "Healthy only":
-        filtered = filtered[filtered["bankrupt"] == 0]
-
-    filtered = filtered.sort_values("lr_prob_bankrupt", ascending=False)
+    filt = df.copy()
+    if sel_sector != "All":
+        filt = filt[filt["sector"] == sel_sector]
+    if risk_levels:
+        filt = filt[filt["risk_bucket"].isin(risk_levels)]
+    filt = filt.sort_values(sort_col, ascending=sort_asc, na_position="last")
 
     # ── KPI row ───────────────────────────────────────────────────────────────
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Companies shown", len(filtered))
-    col2.metric("Bankrupt (actual)", int(filtered["bankrupt"].sum()))
-    col3.metric(
-        "Avg bankruptcy probability",
-        f"{filtered['lr_prob_bankrupt'].mean():.1%}",
-    )
-    col4.metric(
-        "High-risk companies",
-        int((filtered["lr_prob_bankrupt"] >= 0.65).sum()),
-    )
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Companies", len(filt))
+    c2.metric("Avg bankruptcy prob", f"{filt['current_prob'].mean():.1%}")
+    c3.metric("High risk (≥65%)",   int((filt["current_prob"] >= 0.65).sum()))
+    rising = int(filt["delta_prob"].gt(0.02).sum())
+    falling = int(filt["delta_prob"].lt(-0.02).sum())
+    c4.metric("Rising / Falling", f"{rising}  /  {falling}")
 
     st.markdown("---")
 
-    # ── Main leaderboard table ────────────────────────────────────────────────
-    st.subheader("Ranked by Bankruptcy Probability")
+    # ── Main leaderboard ──────────────────────────────────────────────────────
+    st.subheader("Ranked by " + sort_label.lower())
 
-    display_df = filtered[[
-        "ticker", "name", "sector", "company_size", "bankrupt",
-        "lr_prob_bankrupt", "z_score", "z_zone",
-        "fraud_risk_score", "current_ratio", "debt_to_equity",
-    ]].copy()
-
-    display_df["Risk Level"] = display_df["lr_prob_bankrupt"].apply(risk_label)
-    display_df["Actual Outcome"] = display_df["bankrupt"].map(
-        {1: "💀 Bankrupt", 0: "✅ Healthy"}
+    display = filt.copy()
+    display["Current Prob"]  = display["current_prob"].apply(
+        lambda x: f"{x:.1%}" if pd.notna(x) else "—"
     )
-    display_df["Bankruptcy Prob"] = display_df["lr_prob_bankrupt"].apply(
-        lambda x: f"{x:.1%}"
+    display["Prior Prob"]    = display["prior_prob"].apply(
+        lambda x: f"{x:.1%}" if pd.notna(x) else "—"
     )
-    display_df["Z-Score"] = display_df["z_score"].apply(
-        lambda x: f"{x:.2f}" if pd.notna(x) else "—"
+    display["Δ"]             = display.apply(
+        lambda r: f"{r['delta_arrow']} {r['delta_prob']:+.1%}"
+                   if pd.notna(r["delta_prob"]) else "—", axis=1,
     )
-    display_df["Current Ratio"] = display_df["current_ratio"].apply(
-        lambda x: f"{x:.2f}" if pd.notna(x) else "—"
-    )
-    display_df["D/E Ratio"] = display_df["debt_to_equity"].apply(
-        lambda x: f"{x:.2f}" if pd.notna(x) else "—"
+    display["Data As Of"]    = display.apply(
+        lambda r: f"{r['current_period_end']} ({r['current_form']})"
+                   if pd.notna(r["current_period_end"]) else "—", axis=1,
     )
 
     st.dataframe(
-        display_df[[
-            "ticker", "name", "sector", "company_size",
-            "Actual Outcome", "Risk Level", "Bankruptcy Prob",
-            "Z-Score", "z_zone", "fraud_risk_score",
-            "Current Ratio", "D/E Ratio",
+        display[[
+            "ticker", "name", "sector",
+            "risk_bucket", "Current Prob", "Prior Prob", "Δ",
+            "Data As Of",
         ]].rename(columns={
-            "ticker": "Ticker",
-            "name": "Company",
-            "sector": "Sector",
-            "company_size": "Size",
-            "z_zone": "Z-Zone",
-            "fraud_risk_score": "Fraud Flags",
+            "ticker": "Ticker", "name": "Company",
+            "sector": "Sector", "risk_bucket": "Risk",
         }),
         use_container_width=True,
-        height=500,
+        height=600,
     )
 
     st.markdown("---")
 
-    # ── Bar chart: bankruptcy probability by company ───────────────────────────
-    st.subheader("Bankruptcy Probability by Company")
-    colors = [risk_color(p) for p in filtered["lr_prob_bankrupt"]]
-
-    fig = go.Figure(go.Bar(
-        x=filtered["ticker"],
-        y=filtered["lr_prob_bankrupt"],
-        marker_color=colors,
-        text=[f"{p:.0%}" for p in filtered["lr_prob_bankrupt"]],
-        textposition="outside",
-        hovertemplate=(
-            "<b>%{x}</b><br>"
-            "Bankruptcy prob: %{y:.1%}<br>"
-            "<extra></extra>"
-        ),
-    ))
-    fig.add_hline(y=0.65, line_dash="dash", line_color="#e74c3c",
-                  annotation_text="High risk threshold (65%)")
-    fig.add_hline(y=0.40, line_dash="dash", line_color="#f39c12",
-                  annotation_text="Medium risk threshold (40%)")
-    fig.update_layout(
-        yaxis_tickformat=".0%",
-        yaxis_title="Predicted Bankruptcy Probability",
-        xaxis_title="Company Ticker",
-        showlegend=False,
-        height=420,
-    )
-    st.plotly_chart(fig, use_container_width=True)
-
-    # ── Sector breakdown pie ──────────────────────────────────────────────────
+    # ── Visuals row ───────────────────────────────────────────────────────────
     col_a, col_b = st.columns(2)
 
     with col_a:
-        st.subheader("Companies by Sector")
-        sector_counts = filtered["sector"].value_counts().reset_index()
-        sector_counts.columns = ["Sector", "Count"]
-        fig_pie = px.pie(
-            sector_counts, names="Sector", values="Count",
-            color_discrete_sequence=px.colors.qualitative.Set2,
+        st.subheader("Risk Distribution")
+        fig = px.histogram(
+            filt, x="current_prob", nbins=25,
+            color_discrete_sequence=["#2980b9"],
         )
-        fig_pie.update_layout(height=300)
-        st.plotly_chart(fig_pie, use_container_width=True)
+        fig.add_vline(x=0.40, line_dash="dash", line_color="#f39c12",
+                      annotation_text="Medium", annotation_position="top")
+        fig.add_vline(x=0.65, line_dash="dash", line_color="#e74c3c",
+                      annotation_text="High", annotation_position="top")
+        fig.update_xaxes(tickformat=".0%", title="Current Bankruptcy Probability")
+        fig.update_yaxes(title="# Companies")
+        fig.update_layout(height=350, showlegend=False)
+        st.plotly_chart(fig, use_container_width=True)
 
     with col_b:
-        st.subheader("Fraud Risk Distribution")
-        fraud_counts = filtered["fraud_risk_score"].value_counts().sort_index().reset_index()
-        fraud_counts.columns = ["Fraud Flags (0–5)", "Companies"]
-        fig_bar = px.bar(
-            fraud_counts,
-            x="Fraud Flags (0–5)", y="Companies",
-            color="Fraud Flags (0–5)",
-            color_continuous_scale=["#27ae60", "#f39c12", "#e74c3c"],
+        st.subheader("Biggest Quarter-Over-Quarter Changes")
+        moves = filt.dropna(subset=["delta_prob"]).copy()
+        moves["abs_delta"] = moves["delta_prob"].abs()
+        top_moves = moves.nlargest(15, "abs_delta").sort_values("delta_prob")
+        fig2 = go.Figure(go.Bar(
+            x=top_moves["delta_prob"],
+            y=top_moves["ticker"],
+            orientation="h",
+            marker_color=[("#e74c3c" if d > 0 else "#27ae60")
+                          for d in top_moves["delta_prob"]],
+            text=[f"{d:+.1%}" for d in top_moves["delta_prob"]],
+            textposition="outside",
+        ))
+        fig2.update_layout(
+            height=350, xaxis_tickformat=".0%",
+            xaxis_title="Δ Bankruptcy Probability",
         )
-        fig_bar.update_layout(height=300, showlegend=False)
-        st.plotly_chart(fig_bar, use_container_width=True)
+        st.plotly_chart(fig2, use_container_width=True)
+
+    # ── Sector breakdown ──────────────────────────────────────────────────────
+    st.subheader("Average Risk by Sector")
+    by_sector = (
+        filt.groupby("sector")["current_prob"]
+        .mean().sort_values(ascending=False).reset_index()
+    )
+    fig3 = px.bar(
+        by_sector, x="current_prob", y="sector", orientation="h",
+        color="current_prob", color_continuous_scale="RdYlGn_r",
+        text=by_sector["current_prob"].apply(lambda p: f"{p:.1%}"),
+    )
+    fig3.update_layout(
+        height=400, xaxis_tickformat=".0%",
+        xaxis_title="Average Bankruptcy Probability",
+        yaxis_title="Sector", coloraxis_showscale=False,
+    )
+    st.plotly_chart(fig3, use_container_width=True)

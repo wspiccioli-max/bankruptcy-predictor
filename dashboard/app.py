@@ -31,9 +31,9 @@ st.sidebar.markdown("---")
 page = st.sidebar.radio(
     "Navigate",
     [
-        "🏆  Bankruptcy Leaderboard",
+        "🏆  S&P 500 Leaderboard",
         "🔍  Company Lookup",
-        "📊  Model Comparison",
+        "📊  Model Validation",
     ],
 )
 
@@ -49,7 +49,7 @@ st.sidebar.markdown(
 )
 
 # ── Route to the selected page ────────────────────────────────────────────────
-if page == "🏆  Bankruptcy Leaderboard":
+if page == "🏆  S&P 500 Leaderboard":
     from dashboard.page1_leaderboard import render
     render()
 
@@ -57,6 +57,6 @@ elif page == "🔍  Company Lookup":
     from dashboard.page2_lookup import render
     render()
 
-elif page == "📊  Model Comparison":
+elif page == "📊  Model Validation":
     from dashboard.page3_comparison import render
     render()

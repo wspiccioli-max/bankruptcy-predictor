@@ -11,8 +11,10 @@ __pycache__/
 .venv/
 venv/
 
-# Data — raw downloads are large and can be re-fetched
-data/raw/
+# Data — raw EDGAR downloads are large and can be re-fetched
+data/raw/*
+# ...except the small S&P 500 list cache, which we DO want tracked
+!data/raw/sp500_list.csv
 
 # Trained models — can be rebuilt by running train_models.py
 *.pkl
@@ -27,3 +29,4 @@ data/raw/
 .vscode/
 .idea/
 
+.Rhistory

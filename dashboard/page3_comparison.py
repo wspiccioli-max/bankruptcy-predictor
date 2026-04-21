@@ -1,8 +1,13 @@
 """
-Page 3 — Model Comparison
+Page 3 — Model Validation (Historical Backtest)
 
-Shows side-by-side evaluation of all three models:
-  - ROC curves (the main visual)
+Evaluates the logistic regression model on the 30 hand-picked historical
+companies (15 bankrupt, 15 healthy) used to train it. This establishes
+whether the model is good enough to trust on the live S&P 500 data
+shown in Page 1.
+
+Shows:
+  - ROC curves for logistic regression + two rule-based benchmarks
   - Feature importance bar chart (what does the model rely on?)
   - Confusion matrices
   - Comparison table
@@ -169,11 +174,11 @@ def confusion_matrix_fig(cm: np.ndarray, title: str) -> go.Figure:
 
 
 def render():
-    st.title("📊 Model Comparison")
+    st.title("📊 Model Validation — Historical Backtest")
     st.caption(
-        "Side-by-side evaluation of our three prediction approaches. "
-        "ROC-AUC is the primary metric — it measures ranking ability "
-        "independently of any threshold."
+        "Evaluates the logistic regression on 30 hand-picked historical companies "
+        "(15 bankrupt, 15 healthy). This is the backtest that justifies using the "
+        "model to score the live S&P 500 data on Page 1."
     )
 
     df_pred = load_predictions()
