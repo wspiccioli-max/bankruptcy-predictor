@@ -24,7 +24,7 @@ st.set_page_config(
 )
 
 # ── Sidebar navigation ────────────────────────────────────────────────────────
-st.sidebar.title("📉 Filing Risk Predictor")
+st.sidebar.title("📉 Bankruptcy Filing & Fraud Risk Predictor")
 st.sidebar.caption("BA870-AC820 · SEC EDGAR + yfinance")
 st.sidebar.markdown("---")
 
