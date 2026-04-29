@@ -4,7 +4,7 @@ Quarterly EDGAR Fetcher — pulls the two most recent filings per company.
 Difference from edgar_fetcher.py:
   - That module only pulls the most recent 10-K (annual).
   - This module pulls the 2 most recent filings of ANY type (10-K OR 10-Q)
-    so we can compute quarter-over-quarter changes in bankruptcy risk.
+    so we can compute period-over-period changes in filing risk.
 
 Design decisions for quarterly data:
   - Balance sheet items (Assets, Liabilities, Equity) are point-in-time
@@ -77,7 +77,7 @@ def _latest_bs_entries(facts: dict, concept: str, top_n: int = 2) -> list:
     seen = {}
     for e in keep:
         key = e["end"]
-        # Prefer original over amended filings if both exist for same date
+        # Prefer amended filings when both exist for the same fiscal period.
         if key not in seen or (e["form"].endswith("/A") and not seen[key]["form"].endswith("/A")):
             seen[key] = e
     sorted_entries = sorted(seen.values(), key=lambda e: e["end"], reverse=True)

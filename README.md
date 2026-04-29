@@ -1,4 +1,4 @@
-# Bankruptcy & Fraud Risk Predictor
+# Bankruptcy Filing & Fraud Risk Predictor
 
 **Course:** BA870-AC820  
 **Data:** SEC EDGAR 10-K / 10-Q filings + Yahoo Finance  
@@ -6,18 +6,18 @@
 
 ## What it does
 
-1. **Historical training** — Trains a logistic regression model on 30 hand-picked companies (15 confirmed bankruptcies, 15 healthy controls) using their SEC EDGAR financial ratios.
-2. **Live S&P 500 scoring** — Uses that trained model to score all ~500 current S&P 500 companies, pulling their most recent 10-K *or* 10-Q filing from EDGAR.
-3. **Quarter-over-quarter deltas** — Also scores each company's prior filing to show how the bankruptcy risk changed period-over-period (a 🔺 rising-risk company is the most useful signal).
-4. **Automated weekly refresh** — A GitHub Actions workflow (`.github/workflows/refresh.yml`) reruns the full S&P 500 data pull every Sunday night so the live dashboard never goes stale.
+1. **Historical training** — Trains supervised models on historical bankruptcy filing examples plus public-company controls using SEC EDGAR financial ratios. Filing examples are cut off at the final 10-K filed before the bankruptcy filing date.
+2. **Live S&P 500 scoring** — Uses the trained model to score all ~500 current S&P 500 companies, pulling their most recent 10-K *or* 10-Q filing from EDGAR.
+3. **Period-over-period deltas** — Also scores each company's prior filing to show how filing risk changed period-over-period.
+4. **Automated weekly refresh** — A GitHub Actions workflow (`.github/workflows/refresh.yml`) rebuilds the model artifact and reruns the full S&P 500 data pull every Sunday night.
 
 ## Project Structure
 ```
 bankruptcy-predictor/
 ├── analysis.ipynb            # Full academic write-up of the historical backtest
-├── collect_data.py           # Phase 1: pull training-set data (30 companies)
+├── collect_data.py           # Phase 1: pull filing examples + public controls
 ├── feature_engineering.py    # Phase 2: compute ratios + Altman Z-score
-├── train_models.py           # Phase 3: train logistic regression
+├── train_models.py           # Phase 3: train Logistic Regression + Random Forest
 ├── refresh_sp500.py          # Phase 5: live S&P 500 refresh (weekly cron)
 ├── dashboard/                # Streamlit multi-page app
 │   ├── app.py
@@ -36,8 +36,8 @@ bankruptcy-predictor/
 ```bash
 pip install -r requirements.txt
 
-# One-time: train the model on historical companies
-python collect_data.py
+# One-time: rebuild the training dataset
+python collect_data.py --control-limit 90
 python feature_engineering.py
 python train_models.py
 

@@ -6,7 +6,7 @@ This is the single script you run (or that GitHub Actions runs weekly) to:
   2. Pull their two most-recent SEC filings (10-K or 10-Q) from EDGAR
   3. Compute financial ratios for both periods
   4. Score both periods with the already-trained logistic regression model
-  5. Compute quarter-over-quarter change in bankruptcy probability
+  5. Compute period-over-period change in bankruptcy filing risk probability
   6. Save results to data/processed/sp500_predictions.csv
 
 Usage:
@@ -38,19 +38,21 @@ MODEL_FEATURES = [
 ]
 
 
-def score_snapshot(ratios: dict, model, scaler, medians: pd.Series) -> float:
-    """Run one snapshot of ratios through the scaler + model to get p(bankrupt)."""
+def score_snapshot(ratios: dict, model, scaler=None, medians: pd.Series | None = None) -> float:
+    """Run one snapshot of ratios through the trained model to get p(filing)."""
     # Build feature vector in the order the model expects
     row = []
     for f in MODEL_FEATURES:
         v = ratios.get(f)
-        if v is None or pd.isna(v):
+        if (v is None or pd.isna(v)) and medians is not None:
             v = medians[f]
         row.append(v)
 
-    X = np.array(row, dtype=float).reshape(1, -1)
-    X_scaled = scaler.transform(X)
-    return float(model.predict_proba(X_scaled)[0, 1])
+    X = pd.DataFrame([row], columns=MODEL_FEATURES)
+    if scaler is not None:
+        X_scaled = scaler.transform(np.array(row, dtype=float).reshape(1, -1))
+        return float(model.predict_proba(X_scaled)[0, 1])
+    return float(model.predict_proba(X)[0, 1])
 
 
 def risk_bucket(prob: float) -> str:
@@ -77,12 +79,15 @@ def main(limit: int = None):
         sys.exit(1)
     with open(MODEL_PATH, "rb") as f:
         bundle = pickle.load(f)
-    model, scaler = bundle["model"], bundle["scaler"]
+    model = bundle["model"]
+    scaler = bundle.get("scaler")
     print(f"  Loaded model ({len(bundle['features'])} features)\n")
 
     # Medians to impute missing values (loaded from training features.csv)
-    train_features = pd.read_csv("data/processed/features.csv")
-    medians = train_features[MODEL_FEATURES].median()
+    medians = None
+    if scaler is not None:
+        train_features = pd.read_csv("data/processed/features.csv")
+        medians = train_features[MODEL_FEATURES].median()
 
     # ── 2. Fetch S&P 500 universe ────────────────────────────────────────────
     print("Fetching S&P 500 constituent list...")
@@ -154,7 +159,7 @@ def main(limit: int = None):
     print("\n── Summary ───────────────────────────────────────────────────")
     print(f"  Companies with data : {len(with_data)} / {len(df)}")
     if len(with_data) > 0:
-        print(f"  Mean bankruptcy prob: {with_data['current_prob'].mean():.1%}")
+        print(f"  Mean filing risk prob: {with_data['current_prob'].mean():.1%}")
         print(f"  High-risk (≥65%)    : {(with_data['current_prob'] >= 0.65).sum()}")
         print(f"  Medium (40–65%)     : {((with_data['current_prob'] >= 0.40) & (with_data['current_prob'] < 0.65)).sum()}")
         print(f"  Low (<40%)          : {(with_data['current_prob'] < 0.40).sum()}")

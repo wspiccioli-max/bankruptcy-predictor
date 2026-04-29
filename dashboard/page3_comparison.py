@@ -1,13 +1,11 @@
 """
 Page 3 — Model Validation (Historical Backtest)
 
-Evaluates the logistic regression model on the 30 hand-picked historical
-companies (15 bankrupt, 15 healthy) used to train it. This establishes
-whether the model is good enough to trust on the live S&P 500 data
-shown in Page 1.
+Evaluates supervised bankruptcy filing risk models on historical filing
+companies and public controls.
 
 Shows:
-  - ROC curves for logistic regression + two rule-based benchmarks
+  - ROC curves for supervised models + two rule-based benchmarks
   - Feature importance bar chart (what does the model rely on?)
   - Confusion matrices
   - Comparison table
@@ -52,12 +50,13 @@ def make_roc_figure(df: pd.DataFrame) -> go.Figure:
 
     ROC = Receiver Operating Characteristic.
     The curve shows the trade-off between:
-      - True Positive Rate (TPR): did we catch the bankruptcies?
-      - False Positive Rate (FPR): did we falsely flag healthy companies?
+      - True Positive Rate (TPR): did we catch filing examples?
+      - False Positive Rate (FPR): did we falsely flag controls?
     A perfect model hugs the top-left corner. A random guess follows
     the diagonal dashed line (AUC = 0.5).
     """
-    y_true = df["bankrupt"].values
+    label_col = "bankruptcy_filing" if "bankruptcy_filing" in df.columns else "bankrupt"
+    y_true = df[label_col].values
 
     fig = go.Figure()
 
@@ -72,11 +71,23 @@ def make_roc_figure(df: pd.DataFrame) -> go.Figure:
         line=dict(color="#2980b9", width=2.5),
     ))
 
+    if "rf_prob_filing" in df.columns or "rf_prob_bankrupt" in df.columns:
+        rf_col = "rf_prob_filing" if "rf_prob_filing" in df.columns else "rf_prob_bankrupt"
+        rf_probs = df[rf_col].values
+        fpr_rf, tpr_rf, _ = roc_curve(y_true, rf_probs)
+        rf_auc = auc(fpr_rf, tpr_rf)
+        fig.add_trace(go.Scatter(
+            x=fpr_rf, y=tpr_rf,
+            mode="lines",
+            name=f"Random Forest (AUC = {rf_auc:.3f})",
+            line=dict(color="#8e44ad", width=2.5),
+        ))
+
     # ── Altman Z-Score (only companies with a Z-score) ────────────────────────
     z_sub = df.dropna(subset=["z_score"])
-    if len(z_sub) > 1 and z_sub["bankrupt"].nunique() > 1:
-        z_probs = 1 - (z_sub["z_score"] / z_sub["z_score"].max()).clip(0, 1)
-        fpr_z, tpr_z, _ = roc_curve(z_sub["bankrupt"].values, z_probs.values)
+    if len(z_sub) > 1 and z_sub[label_col].nunique() > 1:
+        z_scores = -z_sub["z_score"]
+        fpr_z, tpr_z, _ = roc_curve(z_sub[label_col].values, z_scores.values)
         z_auc = auc(fpr_z, tpr_z)
         fig.add_trace(go.Scatter(
             x=fpr_z, y=tpr_z,
@@ -86,7 +97,7 @@ def make_roc_figure(df: pd.DataFrame) -> go.Figure:
         ))
 
     # ── Fraud Risk Score ──────────────────────────────────────────────────────
-    f_probs = (df["fraud_risk_score"] / 5).values
+    f_probs = df["fraud_risk_score"].values
     fpr_f, tpr_f, _ = roc_curve(y_true, f_probs)
     f_auc = auc(fpr_f, tpr_f)
     fig.add_trace(go.Scatter(
@@ -106,8 +117,8 @@ def make_roc_figure(df: pd.DataFrame) -> go.Figure:
 
     fig.update_layout(
         title="ROC Curves — All Models",
-        xaxis_title="False Positive Rate (healthy companies wrongly flagged)",
-        yaxis_title="True Positive Rate (bankruptcies correctly caught)",
+        xaxis_title="False Positive Rate (controls wrongly flagged)",
+        yaxis_title="True Positive Rate (filing examples correctly caught)",
         legend=dict(x=0.55, y=0.08),
         height=480,
         xaxis=dict(range=[0, 1]),
@@ -159,7 +170,7 @@ def make_feature_importance_chart() -> go.Figure:
 
 def confusion_matrix_fig(cm: np.ndarray, title: str) -> go.Figure:
     """Heatmap-style confusion matrix."""
-    labels = ["Healthy", "Bankrupt"]
+    labels = ["Control", "Filing"]
     fig = go.Figure(go.Heatmap(
         z=cm,
         x=[f"Pred {l}" for l in labels],
@@ -176,26 +187,31 @@ def confusion_matrix_fig(cm: np.ndarray, title: str) -> go.Figure:
 def render():
     st.title("📊 Model Validation — Historical Backtest")
     st.caption(
-        "Evaluates the logistic regression on 30 hand-picked historical companies "
-        "(15 bankrupt, 15 healthy). This is the backtest that justifies using the "
-        "model to score the live S&P 500 data on Page 1."
+        "Evaluates bankruptcy filing risk models on historical filing companies "
+        "and public controls. Metrics are cross-validated with preprocessing "
+        "inside each fold."
     )
 
     df_pred = load_predictions()
-    y_true  = df_pred["bankrupt"].values
+    label_col = "bankruptcy_filing" if "bankruptcy_filing" in df_pred.columns else "bankrupt"
+    y_true  = df_pred[label_col].values
 
     # ── Comparison table at the top ───────────────────────────────────────────
     st.subheader("Summary Statistics")
 
     compare = pd.read_csv(COMPARE_PATH)
-    st.dataframe(compare, use_container_width=True, hide_index=True)
+    display_compare = compare.copy()
+    for col in ["Accuracy", "Precision", "Recall"]:
+        if col in display_compare.columns and pd.api.types.is_numeric_dtype(display_compare[col]):
+            display_compare[col] = display_compare[col].apply(lambda x: f"{x:.1%}")
+    if "ROC-AUC" in display_compare.columns and pd.api.types.is_numeric_dtype(display_compare["ROC-AUC"]):
+        display_compare["ROC-AUC"] = display_compare["ROC-AUC"].apply(lambda x: f"{x:.3f}")
+    st.dataframe(display_compare, use_container_width=True, hide_index=True)
 
     st.info(
-        "**Why is accuracy so low?** We only have 24 companies — far too few "
-        "for a reliable ML model. The logistic regression has 10 features but "
-        "only 24 samples (rule of thumb: need 10–20 samples *per feature*). "
-        "In a real project you'd pull thousands of 10-K filings. "
-        "The ROC-AUC and confusion matrices still reveal meaningful patterns."
+        "The label is bankruptcy filing risk, not final liquidation. Positive "
+        "examples use the last available 10-K before the filing date; controls "
+        "come from public companies without a known filing at collection time."
     )
 
     st.markdown("---")
@@ -225,11 +241,11 @@ def render():
     st.subheader("Confusion Matrices")
     st.caption(
         "Each cell shows how many companies fell into each prediction bucket. "
-        "Bottom-right = correctly caught bankruptcies (true positives). "
-        "Bottom-left = missed bankruptcies (false negatives — the dangerous kind)."
+        "Bottom-right = correctly caught filing examples (true positives). "
+        "Bottom-left = missed filing examples (false negatives)."
     )
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     # Logistic regression
     lr_preds = df_pred["lr_pred_bankrupt"].values
@@ -239,22 +255,33 @@ def render():
         use_container_width=True,
     )
 
+    if "rf_pred_filing" in df_pred.columns or "rf_pred_bankrupt" in df_pred.columns:
+        rf_col = "rf_pred_filing" if "rf_pred_filing" in df_pred.columns else "rf_pred_bankrupt"
+        rf_preds = df_pred[rf_col].values
+        cm_rf = confusion_matrix(y_true, rf_preds, labels=[0, 1])
+        col2.plotly_chart(
+            confusion_matrix_fig(cm_rf, "Random Forest"),
+            use_container_width=True,
+        )
+    else:
+        col2.info("Random Forest predictions not available.")
+
     # Z-score (on subset)
     z_sub = df_pred.dropna(subset=["z_score"])
     if len(z_sub) >= 2:
         z_preds = z_sub["z_pred_bankrupt"].values
-        cm_z = confusion_matrix(z_sub["bankrupt"].values, z_preds)
-        col2.plotly_chart(
+        cm_z = confusion_matrix(z_sub[label_col].values, z_preds, labels=[0, 1])
+        col3.plotly_chart(
             confusion_matrix_fig(cm_z, f"Altman Z-Score (n={len(z_sub)})"),
             use_container_width=True,
         )
     else:
-        col2.info("Not enough Z-scores to display.")
+        col3.info("Not enough Z-scores to display.")
 
     # Fraud risk score
     f_preds = df_pred["fraud_pred_bankrupt"].values
-    cm_f = confusion_matrix(y_true, f_preds)
-    col3.plotly_chart(
+    cm_f = confusion_matrix(y_true, f_preds, labels=[0, 1])
+    col4.plotly_chart(
         confusion_matrix_fig(cm_f, "Fraud Risk Score"),
         use_container_width=True,
     )
@@ -265,15 +292,15 @@ def render():
     st.subheader("Per-Company Predictions vs. Reality")
 
     display = df_pred[[
-        "ticker", "name", "bankrupt",
+        "ticker", "name", label_col,
         "lr_pred_bankrupt", "z_pred_bankrupt", "fraud_pred_bankrupt",
         "lr_prob_bankrupt", "z_score", "fraud_risk_score",
     ]].copy()
 
-    display["Actual"]  = display["bankrupt"].map({1: "💀 Bankrupt", 0: "✅ Healthy"})
-    display["LR Pred"] = display["lr_pred_bankrupt"].map({1: "💀", 0: "✅"})
-    display["Z Pred"]  = display["z_pred_bankrupt"].map({1: "💀", 0: "✅"})
-    display["FR Pred"] = display["fraud_pred_bankrupt"].map({1: "💀", 0: "✅"})
+    display["Actual"]  = display[label_col].map({1: "Filing", 0: "Control"})
+    display["LR Pred"] = display["lr_pred_bankrupt"].map({1: "Filing", 0: "Control"})
+    display["Z Pred"]  = display["z_pred_bankrupt"].map({1: "Filing", 0: "Control"})
+    display["FR Pred"] = display["fraud_pred_bankrupt"].map({1: "Filing", 0: "Control"})
     display["LR Prob"] = display["lr_prob_bankrupt"].apply(lambda x: f"{x:.1%}")
     display["Z-Score"] = display["z_score"].apply(
         lambda x: f"{x:.2f}" if pd.notna(x) else "—"

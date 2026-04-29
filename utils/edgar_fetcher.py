@@ -57,9 +57,14 @@ def _get_company_facts(cik: str) -> Optional[dict]:
         return None
 
 
-def _extract_annual_value(facts: dict, concept: str) -> Optional[float]:
+def _latest_annual_entry(
+    facts: dict,
+    concept: str,
+    cutoff_date: Optional[str] = None,
+    anchor_end: Optional[str] = None,
+) -> Optional[dict]:
     """
-    Pull the most recent annual (10-K) value for a given XBRL concept.
+    Pull the latest annual filing entry for a concept.
 
     EDGAR organises data as:
       facts → us-gaap → {concept} → units → USD → [ list of filings ]
@@ -67,7 +72,9 @@ def _extract_annual_value(facts: dict, concept: str) -> Optional[float]:
     Each filing entry looks like:
       { "form": "10-K", "end": "2023-12-31", "val": 123456789, ... }
 
-    We filter to 10-K forms and grab the latest one.
+    For bankruptcy-filing labels, cutoff_date prevents post-filing or successor
+    financials from entering the training set. When anchor_end is supplied, use
+    values from the same fiscal period or earlier.
     """
     try:
         entries = (
@@ -76,14 +83,29 @@ def _extract_annual_value(facts: dict, concept: str) -> Optional[float]:
     except KeyError:
         return None
 
-    # Keep only annual 10-K filings (not 10-Q quarterly reports)
+    # Keep only annual 10-K filings (not 10-Q quarterly reports).
     annual = [e for e in entries if e.get("form") in ("10-K", "10-K/A")]
+    if cutoff_date:
+        annual = [e for e in annual if e.get("filed", e.get("end", "")) < cutoff_date]
+    if anchor_end:
+        annual = [e for e in annual if e.get("end", "") <= anchor_end]
     if not annual:
         return None
 
-    # Sort by end date descending and return the most recent value
-    annual.sort(key=lambda e: e["end"], reverse=True)
-    return annual[0]["val"]
+    # Sort by fiscal period and filing date so amendments after the same period
+    # do not accidentally push us to a later fiscal period.
+    annual.sort(key=lambda e: (e.get("end", ""), e.get("filed", "")), reverse=True)
+    return annual[0]
+
+
+def _extract_annual_value(
+    facts: dict,
+    concept: str,
+    cutoff_date: Optional[str] = None,
+    anchor_end: Optional[str] = None,
+) -> Optional[float]:
+    entry = _latest_annual_entry(facts, concept, cutoff_date, anchor_end)
+    return None if entry is None else entry.get("val")
 
 
 def _extract_time_series(facts: dict, concept: str) -> pd.Series:
@@ -109,23 +131,40 @@ def _extract_time_series(facts: dict, concept: str) -> pd.Series:
     return series
 
 
-def fetch_financials(cik: str, ticker: str) -> dict:
+def fetch_financials(
+    cik: str,
+    ticker: str,
+    cutoff_date: Optional[str] = None,
+) -> dict:
     """
     Main entry point: fetch all key financial metrics for one company.
 
     Returns a flat dict of raw numbers + computed ratios.
     Returns None values for any metrics EDGAR doesn't have.
     """
-    print(f"  Fetching EDGAR data for {ticker} (CIK {cik})...")
+    cutoff_msg = f", cutoff {cutoff_date}" if cutoff_date else ""
+    print(f"  Fetching EDGAR data for {ticker} (CIK {cik}{cutoff_msg})...")
     time.sleep(0.12)  # stay under SEC's 10 req/s rate limit
 
     facts = _get_company_facts(cik)
     if facts is None:
         return {k: None for k in XBRL_CONCEPTS}
 
+    anchor = _latest_annual_entry(facts, "Assets", cutoff_date=cutoff_date)
+    anchor_end = anchor.get("end") if anchor else None
+
     row = {}
     for friendly_name, concept in XBRL_CONCEPTS.items():
-        row[friendly_name] = _extract_annual_value(facts, concept)
+        row[friendly_name] = _extract_annual_value(
+            facts,
+            concept,
+            cutoff_date=cutoff_date,
+            anchor_end=anchor_end,
+        )
+
+    row["source_filing_end"] = anchor_end
+    row["source_filing_filed"] = anchor.get("filed") if anchor else None
+    row["source_filing_form"] = anchor.get("form") if anchor else None
 
     # ── Derived ratios ────────────────────────────────────────────────────
     ta  = row["total_assets"]

@@ -17,14 +17,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import streamlit as st
 
 st.set_page_config(
-    page_title="Bankruptcy & Fraud Risk Predictor",
+    page_title="Bankruptcy Filing & Fraud Risk Predictor",
     page_icon="📉",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # ── Sidebar navigation ────────────────────────────────────────────────────────
-st.sidebar.title("📉 Risk Predictor")
+st.sidebar.title("📉 Filing Risk Predictor")
 st.sidebar.caption("BA870-AC820 · SEC EDGAR + yfinance")
 st.sidebar.markdown("---")
 

@@ -1,7 +1,7 @@
 """
-Page 1 — Live S&P 500 Bankruptcy Risk Leaderboard
+Page 1 — Live S&P 500 Bankruptcy Filing Risk Leaderboard
 
-Shows every S&P 500 company ranked by the logistic regression bankruptcy
+Shows every S&P 500 company ranked by the logistic regression bankruptcy filing
 probability, using the most recent SEC filing (10-K or 10-Q) that EDGAR has.
 
 Key features:
@@ -38,7 +38,7 @@ def risk_color(p: float) -> str:
 
 
 def render():
-    st.title("🏆 S&P 500 Bankruptcy Risk Leaderboard")
+    st.title("🏆 S&P 500 Bankruptcy Filing Risk Leaderboard")
 
     df = load_sp500()
     if df.empty:
@@ -54,8 +54,8 @@ def render():
     st.caption(
         f"Live scoring of {len(df)} S&P 500 companies. "
         f"**Data refreshed:** `{refresh_ts}` · "
-        "Model: Logistic Regression trained on 30 historical bankruptcies. "
-        "Δ shows quarter-over-quarter change in bankruptcy probability."
+        "Model: Logistic Regression trained on historical filing examples "
+        "and public controls. Δ shows period-over-period change in filing risk."
     )
 
     # ── Sidebar filters ───────────────────────────────────────────────────────
@@ -71,7 +71,7 @@ def render():
     )
 
     sort_options = {
-        "Current bankruptcy probability (highest first)": ("current_prob", False),
+        "Current filing risk probability (highest first)": ("current_prob", False),
         "Biggest risk INCREASE this quarter":              ("delta_prob",  False),
         "Biggest risk DECREASE this quarter":              ("delta_prob",  True),
         "Ticker (A–Z)":                                    ("ticker",      True),
@@ -90,7 +90,7 @@ def render():
     # ── KPI row ───────────────────────────────────────────────────────────────
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Companies", len(filt))
-    c2.metric("Avg bankruptcy prob", f"{filt['current_prob'].mean():.1%}")
+    c2.metric("Avg filing risk", f"{filt['current_prob'].mean():.1%}")
     c3.metric("High risk (≥65%)",   int((filt["current_prob"] >= 0.65).sum()))
     rising = int(filt["delta_prob"].gt(0.02).sum())
     falling = int(filt["delta_prob"].lt(-0.02).sum())
@@ -145,7 +145,7 @@ def render():
                       annotation_text="Medium", annotation_position="top")
         fig.add_vline(x=0.65, line_dash="dash", line_color="#e74c3c",
                       annotation_text="High", annotation_position="top")
-        fig.update_xaxes(tickformat=".0%", title="Current Bankruptcy Probability")
+        fig.update_xaxes(tickformat=".0%", title="Current Filing Risk Probability")
         fig.update_yaxes(title="# Companies")
         fig.update_layout(height=350, showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
@@ -166,7 +166,7 @@ def render():
         ))
         fig2.update_layout(
             height=350, xaxis_tickformat=".0%",
-            xaxis_title="Δ Bankruptcy Probability",
+            xaxis_title="Δ Filing Risk Probability",
         )
         st.plotly_chart(fig2, use_container_width=True)
 
@@ -183,7 +183,7 @@ def render():
     )
     fig3.update_layout(
         height=400, xaxis_tickformat=".0%",
-        xaxis_title="Average Bankruptcy Probability",
+        xaxis_title="Average Filing Risk Probability",
         yaxis_title="Sector", coloraxis_showscale=False,
     )
     st.plotly_chart(fig3, use_container_width=True)

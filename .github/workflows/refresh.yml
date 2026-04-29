@@ -32,6 +32,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Build model artifact
+        run: |
+          python feature_engineering.py
+          python train_models.py
+
       - name: Run S&P 500 refresh
         run: python refresh_sp500.py
 
@@ -39,7 +44,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/processed/sp500_predictions.csv data/raw/sp500_list.csv
+          git add data/processed/model_comparison.csv data/processed/predictions.csv data/processed/feature_importance.csv data/processed/sp500_predictions.csv data/raw/sp500_list.csv
           if git diff --cached --quiet; then
             echo "No data changes this run."
           else

@@ -1,9 +1,9 @@
 """
 Page 2 — Company Lookup
 
-Search any S&P 500 company (or a historical training company) by ticker.
+Search any S&P 500 company by ticker.
 Shows KPI cards, a health gauge, the Altman Z-Score, and quarter-over-quarter
-change in bankruptcy probability.
+change in bankruptcy filing risk probability.
 """
 
 from pathlib import Path
@@ -95,11 +95,11 @@ def render():
     delta        = row.get("delta_prob")
 
     c1.metric(
-        "Current Bankruptcy Prob",
+        "Current Filing Risk",
         f"{current_prob:.1%}" if pd.notna(current_prob) else "—",
         delta=(f"{delta:+.1%}" if pd.notna(delta) else None),
         delta_color="inverse",   # rising risk shown in red
-        help="Logistic regression probability of bankruptcy based on the most recent SEC filing.",
+        help="Logistic regression probability of a bankruptcy filing risk signal based on the most recent SEC filing.",
     )
     c2.metric(
         "Prior Filing Prob",
@@ -148,7 +148,7 @@ def render():
             textposition="outside",
         ))
         fig.update_layout(
-            title=f"Quarter-Over-Quarter Bankruptcy Probability",
+            title=f"Period-Over-Period Filing Risk Probability",
             yaxis_tickformat=".0%",
             yaxis_range=[0, max(1.0, (current_prob or 0) + 0.1)],
             height=300,
