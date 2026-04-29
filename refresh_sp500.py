@@ -80,6 +80,7 @@ def main(limit: int = None):
     with open(MODEL_PATH, "rb") as f:
         bundle = pickle.load(f)
     model = bundle["model"]
+    rf_model = bundle.get("models", {}).get("Random Forest")
     scaler = bundle.get("scaler")
     print(f"  Loaded model ({len(bundle['features'])} features)\n")
 
@@ -122,6 +123,11 @@ def main(limit: int = None):
         cur_prob   = score_snapshot(cur_ratios,   model, scaler, medians)
         prior_prob = score_snapshot(prior_ratios, model, scaler, medians) \
                      if meta["prior_period_end"] else np.nan
+        rf_cur_prob = score_snapshot(cur_ratios, rf_model) if rf_model is not None else np.nan
+        rf_prior_prob = (
+            score_snapshot(prior_ratios, rf_model)
+            if rf_model is not None and meta["prior_period_end"] else np.nan
+        )
 
         rows.append({
             "ticker": company["ticker"],
@@ -137,6 +143,10 @@ def main(limit: int = None):
             "current_prob":       cur_prob,
             "prior_prob":         prior_prob,
             "delta_prob":         (cur_prob - prior_prob) if pd.notna(prior_prob) else np.nan,
+            "lr_current_prob":    cur_prob,
+            "lr_prior_prob":      prior_prob,
+            "rf_current_prob":    rf_cur_prob,
+            "rf_prior_prob":      rf_prior_prob,
             # Keep the current ratios for the dashboard's company lookup page
             **{f"current_{k}": v for k, v in cur_ratios.items()},
         })

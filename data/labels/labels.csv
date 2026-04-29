@@ -4,7 +4,6 @@ LEHMQ,Lehman Brothers,Financials,1,1,2008-09-15,,,Unknown,manual
 GM,General Motors (old),Consumer Discretionary,1,1,2009-06-01,,,Unknown,manual
 SHLDQ,Sears Holdings,Consumer Discretionary,1,1,2018-10-15,2018-02-03,2018-03-23,Mid,manual
 RSHCQ,RadioShack,Consumer Discretionary,1,1,2015-02-05,2013-12-31,2014-12-12,Mid,manual
-CCTYQ,Circuit City,Consumer Discretionary,1,1,2008-11-10,,,Unknown,manual
 BLOKQ,Blockbuster,Consumer Discretionary,1,1,2010-09-23,,,Unknown,manual
 KMART,Kmart,Consumer Staples,1,1,2002-01-22,,,Unknown,manual
 WCOM,WorldCom / MCI,Telecom,1,1,2002-07-21,,,Unknown,manual
@@ -48,6 +47,13 @@ NVTAQ,Invitae,Healthcare,1,1,2024-02-13,2022-12-31,2023-02-28,Mid,manual
 CANOQ,Cano Health,Healthcare,1,1,2024-02-04,2022-12-31,2023-03-15,Mid,manual
 AUDAQ,Audacy,Communication Services,1,1,2024-01-07,2022-12-31,2023-03-16,Mid,manual
 BIG,Big Lots,Consumer Discretionary,1,1,2024-09-09,2024-02-03,2024-04-18,Mid,manual
+CONNQ,Conn's Inc,Consumer Discretionary,1,1,2024-07-23,2024-01-31,2024-04-18,Mid,manual
+LLFLQ,LL Flooring Holdings,Consumer Discretionary,1,1,2024-08-11,2023-12-31,2024-03-01,Small,manual
+JOANQ,JOANN Inc,Consumer Discretionary,1,1,2024-03-18,2023-01-28,2023-04-04,Mid,manual
+EVA,Enviva Inc,Energy,1,1,2024-03-12,2022-12-31,2023-03-01,Mid,manual
+ISUNQ,iSun Inc,Industrials,1,1,2024-06-03,2023-12-31,2024-04-16,Small,manual
+CRGEQ,Charge Enterprises,Communication Services,1,1,2024-04-24,2022-12-31,2023-03-15,Small,manual
+IDICQ,PARTS iD,Consumer Discretionary,1,1,2024-02-05,2022-12-31,2023-04-17,Small,manual
 AAPL,Apple Inc,Technology,0,0,,2025-09-27,2025-10-31,Large,manual
 MSFT,Microsoft Corp,Technology,0,0,,2025-06-30,2025-07-30,Large,manual
 GOOGL,Alphabet Inc,Technology,0,0,,2025-12-31,2026-02-05,Large,manual
@@ -59,7 +65,6 @@ WMT,Walmart,Consumer Staples,0,0,,2026-01-31,2026-03-13,Large,manual
 VZ,Verizon Communications,Telecom,0,0,,2025-12-31,2026-02-17,Large,manual
 GE,General Electric,Industrials,0,0,,2014-12-31,2015-02-27,Large,manual
 BA,Boeing Co,Industrials,0,0,,2025-12-31,2026-01-30,Large,manual
-DAL,Delta Air Lines (new),Industrials,0,0,,2025-12-31,2026-02-11,Large,manual
 T,AT&T,Telecom,0,0,,2025-12-31,2026-02-09,Large,manual
 CVS,CVS Health,Consumer Staples,0,0,,2025-12-31,2026-02-10,Large,manual
 MRK,Merck & Co,Healthcare,0,0,,2025-12-31,2026-02-24,Large,manual
@@ -71,6 +76,8 @@ FOX,Fox Corporation (Class B),Communication Services,0,0,,2025-06-30,2025-08-06,
 FOXA,Fox Corporation (Class A),Communication Services,0,0,,2025-06-30,2025-08-06,Large,s&p500_auto_control
 LYV,Live Nation Entertainment,Communication Services,0,0,,2025-12-31,2026-02-19,Large,s&p500_auto_control
 META,Meta Platforms,Communication Services,0,0,,2025-12-31,2026-01-29,Large,s&p500_auto_control
+NFLX,Netflix,Communication Services,0,0,,2025-12-31,2026-01-23,Large,s&p500_auto_control
+NWS,News Corp (Class B),Communication Services,0,0,,2025-06-30,2025-08-06,Large,s&p500_auto_control
 ABNB,Airbnb,Consumer Discretionary,0,0,,2025-12-31,2026-02-12,Large,s&p500_auto_control
 APTV,Aptiv,Consumer Discretionary,0,0,,2025-12-31,2026-02-06,Large,s&p500_auto_control
 AZO,AutoZone,Consumer Discretionary,0,0,,2025-08-30,2025-10-27,Large,s&p500_auto_control
@@ -79,6 +86,8 @@ BKNG,Booking Holdings,Consumer Discretionary,0,0,,2025-12-31,2026-02-18,Large,s&
 CCL,Carnival,Consumer Discretionary,0,0,,2025-11-30,2026-01-27,Large,s&p500_auto_control
 CMG,Chipotle Mexican Grill,Consumer Discretionary,0,0,,2025-12-31,2026-02-04,Mid,s&p500_auto_control
 CVNA,Carvana,Consumer Discretionary,0,0,,2025-12-31,2026-02-18,Large,s&p500_auto_control
+DASH,DoorDash,Consumer Discretionary,0,0,,2025-12-31,2026-02-18,Large,s&p500_auto_control
+DECK,Deckers Brands,Consumer Discretionary,0,0,,2025-03-31,2025-05-23,Mid,s&p500_auto_control
 ADM,Archer Daniels Midland,Consumer Staples,0,0,,2025-12-31,2026-02-17,Large,s&p500_auto_control
 BF-B,Brown–Forman,Consumer Staples,0,0,,2025-04-30,2025-06-13,Mid,s&p500_auto_control
 BG,Bunge Global,Consumer Staples,0,0,,2025-12-31,2026-02-19,Large,s&p500_auto_control
@@ -87,6 +96,8 @@ CASY,Casey's,Consumer Staples,0,0,,2025-04-30,2025-06-23,Mid,s&p500_auto_control
 CHD,Church & Dwight,Consumer Staples,0,0,,2025-12-31,2026-02-12,Mid,s&p500_auto_control
 CL,Colgate-Palmolive,Consumer Staples,0,0,,2025-12-31,2026-02-23,Large,s&p500_auto_control
 CLX,Clorox,Consumer Staples,0,0,,2025-06-30,2025-08-08,Mid,s&p500_auto_control
+COST,Costco,Consumer Staples,0,0,,2025-08-31,2025-10-08,Large,s&p500_auto_control
+CPB,Campbell's Company (The),Consumer Staples,0,0,,2025-08-03,2025-09-18,Large,s&p500_auto_control
 APA,APA Corporation,Energy,0,0,,2025-12-31,2026-02-26,Large,s&p500_auto_control
 BKR,Baker Hughes,Energy,0,0,,2025-12-31,2026-02-05,Large,s&p500_auto_control
 COP,ConocoPhillips,Energy,0,0,,2025-12-31,2026-02-17,Large,s&p500_auto_control
@@ -95,6 +106,8 @@ CVX,Chevron Corporation,Energy,0,0,,2025-12-31,2026-02-24,Large,s&p500_auto_cont
 DVN,Devon Energy,Energy,0,0,,2025-12-31,2026-02-18,Large,s&p500_auto_control
 EOG,EOG Resources,Energy,0,0,,2025-12-31,2026-02-24,Large,s&p500_auto_control
 EQT,EQT Corporation,Energy,0,0,,2025-12-31,2026-02-18,Large,s&p500_auto_control
+FANG,Diamondback Energy,Energy,0,0,,2025-12-31,2026-02-25,Large,s&p500_auto_control
+HAL,Halliburton,Energy,0,0,,2025-12-31,2026-02-06,Large,s&p500_auto_control
 ACGL,Arch Capital Group,Financials,0,0,,2025-12-31,2026-02-26,Large,s&p500_auto_control
 AFL,Aflac,Financials,0,0,,2025-12-31,2026-02-25,Large,s&p500_auto_control
 AIG,American International Group,Financials,0,0,,2025-12-31,2026-02-12,Large,s&p500_auto_control
@@ -103,6 +116,8 @@ AJG,Arthur J. Gallagher & Co.,Financials,0,0,,2025-12-31,2026-02-17,Large,s&p500
 ALL,Allstate,Financials,0,0,,2025-12-31,2026-02-20,Large,s&p500_auto_control
 AMP,Ameriprise Financial,Financials,0,0,,2025-12-31,2026-03-12,Large,s&p500_auto_control
 AON,Aon plc,Financials,0,0,,2025-12-31,2026-02-13,Large,s&p500_auto_control
+APO,Apollo Global Management,Financials,0,0,,2025-12-31,2026-02-25,Large,s&p500_auto_control
+ARES,Ares Management,Financials,0,0,,2025-12-31,2026-02-25,Large,s&p500_auto_control
 A,Agilent Technologies,Health Care,0,0,,2025-10-31,2025-12-22,Large,s&p500_auto_control
 ABBV,AbbVie,Health Care,0,0,,2025-12-31,2026-02-20,Large,s&p500_auto_control
 ABT,Abbott Laboratories,Health Care,0,0,,2025-12-31,2026-02-20,Large,s&p500_auto_control
@@ -111,6 +126,8 @@ AMGN,Amgen,Health Care,0,0,,2025-12-31,2026-02-13,Large,s&p500_auto_control
 BAX,Baxter International,Health Care,0,0,,2025-12-31,2026-02-12,Large,s&p500_auto_control
 BDX,Becton Dickinson,Health Care,0,0,,2025-09-30,2025-11-25,Large,s&p500_auto_control
 BIIB,Biogen,Health Care,0,0,,2025-12-31,2026-02-06,Large,s&p500_auto_control
+BMY,Bristol Myers Squibb,Health Care,0,0,,2025-12-31,2026-02-11,Large,s&p500_auto_control
+BSX,Boston Scientific,Health Care,0,0,,2025-12-31,2026-02-17,Large,s&p500_auto_control
 ADP,Automatic Data Processing,Industrials,0,0,,2025-06-30,2025-08-06,Large,s&p500_auto_control
 ALLE,Allegion,Industrials,0,0,,2025-12-31,2026-02-17,Mid,s&p500_auto_control
 AME,Ametek,Industrials,0,0,,2025-12-31,2026-02-17,Large,s&p500_auto_control
@@ -119,6 +136,8 @@ AXON,Axon Enterprise,Industrials,0,0,,2025-12-31,2026-02-25,Mid,s&p500_auto_cont
 BLDR,Builders FirstSource,Industrials,0,0,,2025-12-31,2026-02-17,Large,s&p500_auto_control
 BR,Broadridge Financial Solutions,Industrials,0,0,,2025-06-30,2025-08-05,Mid,s&p500_auto_control
 CARR,Carrier Global,Industrials,0,0,,2025-12-31,2026-02-05,Large,s&p500_auto_control
+CAT,Caterpillar Inc.,Industrials,0,0,,2025-12-31,2026-02-13,Large,s&p500_auto_control
+CHRW,C.H. Robinson,Industrials,0,0,,2025-12-31,2026-02-13,Mid,s&p500_auto_control
 ACN,Accenture,Information Technology,0,0,,2025-08-31,2025-10-10,Large,s&p500_auto_control
 ADBE,Adobe Inc.,Information Technology,0,0,,2025-11-28,2026-01-15,Large,s&p500_auto_control
 ADI,Analog Devices,Information Technology,0,0,,2025-11-01,2025-11-25,Large,s&p500_auto_control
@@ -127,6 +146,8 @@ AKAM,Akamai Technologies,Information Technology,0,0,,2025-12-31,2026-02-20,Large
 AMAT,Applied Materials,Information Technology,0,0,,2025-10-26,2025-12-12,Large,s&p500_auto_control
 AMD,Advanced Micro Devices,Information Technology,0,0,,2025-12-27,2026-02-04,Large,s&p500_auto_control
 ANET,Arista Networks,Information Technology,0,0,,2025-12-31,2026-02-17,Large,s&p500_auto_control
+APH,Amphenol,Information Technology,0,0,,2025-12-31,2026-02-11,Large,s&p500_auto_control
+APP,AppLovin,Information Technology,0,0,,2025-12-31,2026-02-19,Mid,s&p500_auto_control
 ALB,Albemarle Corporation,Materials,0,0,,2025-12-31,2026-02-11,Large,s&p500_auto_control
 AMCR,Amcor,Materials,0,0,,2025-06-30,2025-08-15,Large,s&p500_auto_control
 APD,Air Products,Materials,0,0,,2025-09-30,2025-11-20,Large,s&p500_auto_control
@@ -135,6 +156,8 @@ BALL,Ball Corporation,Materials,0,0,,2025-12-31,2026-02-19,Large,s&p500_auto_con
 CF,CF Industries,Materials,0,0,,2025-12-31,2026-02-25,Large,s&p500_auto_control
 CRH,CRH plc,Materials,0,0,,2025-12-31,2026-02-18,Large,s&p500_auto_control
 CTVA,Corteva,Materials,0,0,,2025-12-31,2026-02-12,Large,s&p500_auto_control
+DD,DuPont,Materials,0,0,,2025-12-31,2026-02-17,Large,s&p500_auto_control
+DOW,Dow Inc.,Materials,0,0,,2025-12-31,2026-02-03,Large,s&p500_auto_control
 AMT,American Tower,Real Estate,0,0,,2025-12-31,2026-02-24,Large,s&p500_auto_control
 ARE,Alexandria Real Estate Equities,Real Estate,0,0,,2025-12-31,2026-01-26,Large,s&p500_auto_control
 AVB,AvalonBay Communities,Real Estate,0,0,,2025-12-31,2026-02-27,Large,s&p500_auto_control
@@ -143,6 +166,8 @@ CBRE,CBRE Group,Real Estate,0,0,,2025-12-31,2026-02-12,Large,s&p500_auto_control
 CCI,Crown Castle,Real Estate,0,0,,2025-12-31,2026-02-23,Large,s&p500_auto_control
 CPT,Camden Property Trust,Real Estate,0,0,,2025-12-31,2026-02-12,Mid,s&p500_auto_control
 CSGP,CoStar Group,Real Estate,0,0,,2025-12-31,2026-02-26,Large,s&p500_auto_control
+DLR,Digital Realty,Real Estate,0,0,,2025-12-31,2026-02-13,Large,s&p500_auto_control
+DOC,Healthpeak Properties,Real Estate,0,0,,2025-12-31,2026-02-03,Large,s&p500_auto_control
 AEE,Ameren,Utilities,0,0,,2025-12-31,2026-02-18,Large,s&p500_auto_control
 AEP,American Electric Power,Utilities,0,0,,2025-12-31,2026-02-12,Large,s&p500_auto_control
 AES,AES Corporation,Utilities,0,0,,2025-12-31,2026-03-02,Large,s&p500_auto_control
@@ -151,5 +176,15 @@ AWK,American Water Works,Utilities,0,0,,2025-12-31,2026-02-18,Large,s&p500_auto_
 CEG,Constellation Energy,Utilities,0,0,,2025-12-31,2026-02-24,Large,s&p500_auto_control
 CMS,CMS Energy,Utilities,0,0,,2025-12-31,2026-02-10,Large,s&p500_auto_control
 CNP,CenterPoint Energy,Utilities,0,0,,2025-12-31,2026-02-19,Large,s&p500_auto_control
-NFLX,Netflix,Communication Services,0,0,,2025-12-31,2026-01-23,Large,s&p500_auto_control
-NWS,News Corp (Class B),Communication Services,0,0,,2025-06-30,2025-08-06,Large,s&p500_auto_control
+D,Dominion Energy,Utilities,0,0,,2025-12-31,2026-02-23,Large,s&p500_auto_control
+DTE,DTE Energy,Utilities,0,0,,2025-12-31,2026-02-17,Large,s&p500_auto_control
+NWSA,News Corp (Class A),Communication Services,0,0,,2025-06-30,2025-08-06,Large,s&p500_auto_control
+OMC,Omnicom Group,Communication Services,0,0,,2025-12-31,2026-02-20,Large,s&p500_auto_control
+PSKY,Paramount Skydance Corporation,Communication Services,0,0,,2025-12-31,2026-02-25,Large,s&p500_auto_control
+SATS,EchoStar,Communication Services,0,0,,2025-12-31,2026-03-02,Large,s&p500_auto_control
+TKO,TKO Group Holdings,Communication Services,0,0,,2025-12-31,2026-02-25,Large,s&p500_auto_control
+TMUS,T-Mobile US,Communication Services,0,0,,2025-12-31,2026-02-11,Large,s&p500_auto_control
+TTD,Trade Desk (The),Communication Services,0,0,,2025-12-31,2026-02-27,Mid,s&p500_auto_control
+TTWO,Take-Two Interactive,Communication Services,0,0,,2025-03-31,2025-05-20,Mid,s&p500_auto_control
+WBD,Warner Bros. Discovery,Communication Services,0,0,,2025-12-31,2026-02-27,Large,s&p500_auto_control
+DHI,D. R. Horton,Consumer Discretionary,0,0,,2025-09-30,2025-11-19,Large,s&p500_auto_control

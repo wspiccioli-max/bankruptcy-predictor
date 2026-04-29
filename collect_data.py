@@ -76,7 +76,7 @@ def _auto_sp500_controls(existing: list[dict], limit: int) -> list[dict]:
     ]
 
 
-def build_dataset(control_limit: int = 90) -> pd.DataFrame:
+def build_dataset(control_limit: int = 120) -> pd.DataFrame:
     rows = []
     companies = [dict(c) for c in COMPANIES]
     companies.extend(_auto_sp500_controls(companies, control_limit))
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--control-limit",
         type=int,
-        default=90,
+        default=120,
         help="Number of deterministic S&P 500 controls to add to manual controls.",
     )
     args = parser.parse_args()

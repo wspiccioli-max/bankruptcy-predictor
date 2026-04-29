@@ -17,6 +17,12 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from dashboard.formatting import (
+    PROBABILITY_DISCLAIMER,
+    format_delta,
+    format_probability,
+)
+from dashboard.metadata import methodology_caption
 
 ROOT = Path(__file__).parent.parent
 SP500_PATH       = ROOT / "data/processed/sp500_predictions.csv"
@@ -54,9 +60,10 @@ def render():
     st.caption(
         f"Live scoring of {len(df)} S&P 500 companies. "
         f"**Data refreshed:** `{refresh_ts}` · "
-        "Model: Logistic Regression trained on historical filing examples "
-        "and public controls. Δ shows period-over-period change in filing risk."
+        "Δ shows period-over-period change in filing risk."
     )
+    st.caption(methodology_caption())
+    st.caption(PROBABILITY_DISCLAIMER)
 
     # ── Sidebar filters ───────────────────────────────────────────────────────
     st.sidebar.markdown("### Filters")
@@ -90,7 +97,7 @@ def render():
     # ── KPI row ───────────────────────────────────────────────────────────────
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Companies", len(filt))
-    c2.metric("Avg filing risk", f"{filt['current_prob'].mean():.1%}")
+    c2.metric("Avg filing risk", format_probability(filt["current_prob"].mean()))
     c3.metric("High risk (≥65%)",   int((filt["current_prob"] >= 0.65).sum()))
     rising = int(filt["delta_prob"].gt(0.02).sum())
     falling = int(filt["delta_prob"].lt(-0.02).sum())
@@ -102,14 +109,10 @@ def render():
     st.subheader("Ranked by " + sort_label.lower())
 
     display = filt.copy()
-    display["Current Prob"]  = display["current_prob"].apply(
-        lambda x: f"{x:.1%}" if pd.notna(x) else "—"
-    )
-    display["Prior Prob"]    = display["prior_prob"].apply(
-        lambda x: f"{x:.1%}" if pd.notna(x) else "—"
-    )
+    display["Current Prob"]  = display["current_prob"].apply(format_probability)
+    display["Prior Prob"]    = display["prior_prob"].apply(format_probability)
     display["Δ"]             = display.apply(
-        lambda r: f"{r['delta_arrow']} {r['delta_prob']:+.1%}"
+        lambda r: f"{r['delta_arrow']} {format_delta(r['delta_prob'])}"
                    if pd.notna(r["delta_prob"]) else "—", axis=1,
     )
     display["Data As Of"]    = display.apply(
@@ -161,7 +164,7 @@ def render():
             orientation="h",
             marker_color=[("#e74c3c" if d > 0 else "#27ae60")
                           for d in top_moves["delta_prob"]],
-            text=[f"{d:+.1%}" for d in top_moves["delta_prob"]],
+            text=[format_delta(d) for d in top_moves["delta_prob"]],
             textposition="outside",
         ))
         fig2.update_layout(
@@ -179,7 +182,7 @@ def render():
     fig3 = px.bar(
         by_sector, x="current_prob", y="sector", orientation="h",
         color="current_prob", color_continuous_scale="RdYlGn_r",
-        text=by_sector["current_prob"].apply(lambda p: f"{p:.1%}"),
+        text=by_sector["current_prob"].apply(format_probability),
     )
     fig3.update_layout(
         height=400, xaxis_tickformat=".0%",

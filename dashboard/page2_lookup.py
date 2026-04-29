@@ -11,6 +11,11 @@ from pathlib import Path
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from dashboard.formatting import (
+    PROBABILITY_DISCLAIMER,
+    format_delta,
+    format_probability,
+)
 
 ROOT            = Path(__file__).parent.parent
 SP500_PATH      = ROOT / "data/processed/sp500_predictions.csv"
@@ -32,12 +37,12 @@ def load_historical() -> pd.DataFrame:
 def health_gauge(p: float) -> go.Figure:
     score = (1 - p) * 100
     color = "#27ae60" if score >= 67 else ("#f39c12" if score >= 34 else "#e74c3c")
-    label = "Healthy" if score >= 67 else ("At Risk" if score >= 34 else "Distressed")
+    label = "Lower Signal" if score >= 67 else ("Monitor" if score >= 34 else "Higher Signal")
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=score,
         number={"suffix": " / 100"},
-        title={"text": f"Financial Health Score<br><sub>{label}</sub>"},
+        title={"text": f"Filing Risk Signal<br><sub>{label}</sub>"},
         gauge={
             "axis": {"range": [0, 100]},
             "bar":  {"color": color},
@@ -54,6 +59,7 @@ def health_gauge(p: float) -> go.Figure:
 
 def render():
     st.title("🔍 Company Lookup")
+    st.caption(PROBABILITY_DISCLAIMER)
 
     sp500 = load_sp500()
     sp500 = sp500[sp500.get("data_available", False) == True].copy() if not sp500.empty else sp500
@@ -96,14 +102,14 @@ def render():
 
     c1.metric(
         "Current Filing Risk",
-        f"{current_prob:.1%}" if pd.notna(current_prob) else "—",
-        delta=(f"{delta:+.1%}" if pd.notna(delta) else None),
+        format_probability(current_prob),
+        delta=(format_delta(delta) if pd.notna(delta) else None),
         delta_color="inverse",   # rising risk shown in red
         help="Logistic regression probability of a bankruptcy filing risk signal based on the most recent SEC filing.",
     )
     c2.metric(
         "Prior Filing Prob",
-        f"{prior_prob:.1%}" if pd.notna(prior_prob) else "—",
+        format_probability(prior_prob),
         help="Same model applied to the previous period's filing.",
     )
     cr = row.get("current_current_ratio")
@@ -142,8 +148,8 @@ def render():
                           "#e74c3c" if current_prob >= 0.65 else
                           ("#f39c12" if current_prob >= 0.40 else "#27ae60")],
             text=[
-                f"{prior_prob:.1%}" if pd.notna(prior_prob) else "n/a",
-                f"{current_prob:.1%}" if pd.notna(current_prob) else "n/a",
+                format_probability(prior_prob) if pd.notna(prior_prob) else "n/a",
+                format_probability(current_prob) if pd.notna(current_prob) else "n/a",
             ],
             textposition="outside",
         ))

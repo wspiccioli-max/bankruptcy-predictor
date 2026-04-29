@@ -17,8 +17,12 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
+import yfinance as yf
+from datetime import timedelta
 from pathlib import Path
 from sklearn.metrics import roc_curve, auc, confusion_matrix
+from dashboard.formatting import PROBABILITY_DISCLAIMER, format_probability
+from dashboard.metadata import methodology_caption
 
 ROOT = Path(__file__).parent.parent
 PRED_PATH    = ROOT / "data/processed/predictions.csv"
@@ -26,6 +30,13 @@ FEAT_PATH    = ROOT / "data/processed/features.csv"
 MODEL_PATH   = ROOT / "models/logistic_model.pkl"
 COMPARE_PATH = ROOT / "data/processed/model_comparison.csv"
 FI_PATH      = ROOT / "data/processed/feature_importance.csv"
+
+MARKET_SIGNAL_SYMBOLS = {
+    # yfinance no longer serves most delisted/Q tickers. Keep this list small
+    # and only include examples that were verified to return pre-filing prices.
+    "PCG": "PCG",
+    "CZR": "CZR",
+}
 
 
 @st.cache_data
@@ -42,6 +53,25 @@ def load_features() -> pd.DataFrame:
 def load_model():
     with open(MODEL_PATH, "rb") as f:
         return pickle.load(f)
+
+
+@st.cache_data(ttl=86400)
+def load_price_window(yahoo_symbol: str, filing_date: str) -> pd.DataFrame:
+    end = pd.to_datetime(filing_date) + timedelta(days=5)
+    start = pd.to_datetime(filing_date) - timedelta(days=365)
+    prices = yf.download(
+        yahoo_symbol,
+        start=start.date(),
+        end=end.date(),
+        progress=False,
+        auto_adjust=False,
+    )
+    if prices.empty:
+        return pd.DataFrame()
+    close = prices["Close"]
+    if isinstance(close, pd.DataFrame):
+        close = close.iloc[:, 0]
+    return pd.DataFrame({"Date": close.index, "Close": close.values})
 
 
 def make_roc_figure(df: pd.DataFrame) -> go.Figure:
@@ -191,6 +221,8 @@ def render():
         "and public controls. Metrics are cross-validated with preprocessing "
         "inside each fold."
     )
+    st.caption(methodology_caption())
+    st.caption(PROBABILITY_DISCLAIMER)
 
     df_pred = load_predictions()
     label_col = "bankruptcy_filing" if "bankruptcy_filing" in df_pred.columns else "bankrupt"
@@ -289,7 +321,7 @@ def render():
     st.markdown("---")
 
     # ── Per-company prediction table ──────────────────────────────────────────
-    st.subheader("Per-Company Predictions vs. Reality")
+    st.subheader("Per-Company Filing Labels vs. Model Outputs")
 
     display = df_pred[[
         "ticker", "name", label_col,
@@ -301,7 +333,7 @@ def render():
     display["LR Pred"] = display["lr_pred_bankrupt"].map({1: "Filing", 0: "Control"})
     display["Z Pred"]  = display["z_pred_bankrupt"].map({1: "Filing", 0: "Control"})
     display["FR Pred"] = display["fraud_pred_bankrupt"].map({1: "Filing", 0: "Control"})
-    display["LR Prob"] = display["lr_prob_bankrupt"].apply(lambda x: f"{x:.1%}")
+    display["LR Prob"] = display["lr_prob_bankrupt"].apply(format_probability)
     display["Z-Score"] = display["z_score"].apply(
         lambda x: f"{x:.2f}" if pd.notna(x) else "—"
     )
@@ -319,3 +351,49 @@ def render():
         use_container_width=True,
         height=450,
     )
+
+    st.markdown("---")
+    st.subheader("Pre-Filing Stock Price Signal")
+    st.caption(
+        "Demonstrates verified historical market-signal examples for selected "
+        "filing companies. Broader ticker coverage is a future enhancement "
+        "because delisting and symbol survivorship limit yfinance availability."
+    )
+    filings = df_pred[df_pred[label_col] == 1].dropna(subset=["filing_date"]).copy()
+    filings = filings[filings["ticker"].isin(MARKET_SIGNAL_SYMBOLS)].copy()
+    if filings.empty:
+        st.info(
+            "Future enhancement: no verified Yahoo price-history mappings are "
+            "available in the current historical predictions file."
+        )
+        return
+
+    choices = {
+        f"{r['ticker']} - {r['name']} ({r['filing_date']})": r
+        for _, r in filings.sort_values("ticker").iterrows()
+    }
+    selected = st.selectbox("Historical filing company", list(choices.keys()))
+    row = choices[selected]
+    yahoo_symbol = MARKET_SIGNAL_SYMBOLS[row["ticker"]]
+    prices = load_price_window(yahoo_symbol, row["filing_date"])
+    if prices.empty:
+        st.info("Future enhancement: yfinance did not return this verified symbol today.")
+        return
+
+    filing_date = pd.to_datetime(row["filing_date"])
+    before = prices[prices["Date"] <= filing_date]
+    if before.empty:
+        st.warning("No pre-filing prices available.")
+        return
+
+    start_price = float(before["Close"].iloc[0])
+    end_price = float(before["Close"].iloc[-1])
+    decline = (end_price / start_price - 1) if start_price else np.nan
+    st.caption(f"Yahoo symbol used: `{yahoo_symbol}`")
+    st.metric("Price move in year before filing", f"{decline:+.1%}")
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=prices["Date"], y=prices["Close"], mode="lines", name="Close"))
+    fig.add_vline(x=filing_date, line_dash="dash", line_color="#e74c3c")
+    fig.update_layout(height=320, yaxis_title="Close", xaxis_title="Date")
+    st.plotly_chart(fig, use_container_width=True)

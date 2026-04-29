@@ -1,54 +1,72 @@
-# Bankruptcy Filing & Fraud Risk Predictor
+# Bankruptcy Filing Risk Predictor
 
-**Course:** BA870-AC820  
-**Data:** SEC EDGAR 10-K / 10-Q filings + Yahoo Finance  
-**Scope:** Live scoring of the current S&P 500 with quarter-over-quarter risk changes
+Educational/prototype screening tool for estimated bankruptcy filing risk. The dashboard uses public SEC EDGAR financial statement data and yfinance market data to compare companies against historical filing examples and public-company controls.
 
-## What it does
+Model probabilities are estimated filing-risk similarity scores, not certainty, predictions of final liquidation, or investment advice.
 
-1. **Historical training** — Trains supervised models on historical bankruptcy filing examples plus public-company controls using SEC EDGAR financial ratios. Filing examples are cut off at the final 10-K filed before the bankruptcy filing date.
-2. **Live S&P 500 scoring** — Uses the trained model to score all ~500 current S&P 500 companies, pulling their most recent 10-K *or* 10-Q filing from EDGAR.
-3. **Period-over-period deltas** — Also scores each company's prior filing to show how filing risk changed period-over-period.
-4. **Automated weekly refresh** — A GitHub Actions workflow (`.github/workflows/refresh.yml`) rebuilds the model artifact and reruns the full S&P 500 data pull every Sunday night.
+## Current Methodology
+
+- **Training sample:** 178 companies in the current committed artifacts: 44 bankruptcy-filing positives and 134 controls.
+- **Positive label:** bankruptcy filing risk, not confirmed permanent failure.
+- **Filing examples:** use the final 10-K available before the bankruptcy filing date where available, avoiding post-filing or successor filings.
+- **Controls:** public companies without a known bankruptcy filing at collection time.
+- **Supervised models:** Logistic Regression and Random Forest.
+- **Benchmarks:** Altman Z-Score and Fraud Risk Score are rule-based indicators, not supervised models.
+- **S&P 500 scoring model:** Logistic Regression.
+- **Market signal demo:** verified pre-filing yfinance price examples are currently limited to `PCG` and `CZR`; broader historical ticker coverage is a future enhancement because delisted symbols are not reliably available.
+
+## Dashboard Pages
+
+- **S&P 500 Leaderboard:** latest S&P 500 filing-risk scores and period-over-period deltas.
+- **Watchlist:** top current S&P 500 companies by estimated filing risk, with risk category and financial drivers.
+- **Company Lookup:** per-company filing-risk score, filing metadata, and key ratios.
+- **Model Validation:** cross-validated metrics, model comparison, confusion matrices, feature importance, and selected pre-filing stock-price examples.
 
 ## Project Structure
-```
+
+```text
 bankruptcy-predictor/
-├── analysis.ipynb            # Full academic write-up of the historical backtest
-├── collect_data.py           # Phase 1: pull filing examples + public controls
-├── feature_engineering.py    # Phase 2: compute ratios + Altman Z-score
-├── train_models.py           # Phase 3: train Logistic Regression + Random Forest
-├── refresh_sp500.py          # Phase 5: live S&P 500 refresh (weekly cron)
+├── collect_data.py           # Pull filing examples + public controls
+├── feature_engineering.py    # Compute ratios, Altman Z-score, fraud flags
+├── train_models.py           # Train/evaluate Logistic Regression + Random Forest
+├── refresh_sp500.py          # Score current S&P 500 filings
 ├── dashboard/                # Streamlit multi-page app
-│   ├── app.py
-│   ├── page1_leaderboard.py  # Live S&P 500 leaderboard with deltas
-│   ├── page2_lookup.py       # Per-company KPI dashboard
-│   └── page3_comparison.py   # Historical backtest (model validation)
-├── utils/                    # Reusable helpers (EDGAR, yfinance, scoring)
-├── models/                   # Saved model artifacts (.pkl)
-├── data/
-│   ├── raw/                  # Cached Wikipedia S&P 500 list
-│   └── processed/            # All CSVs used by the dashboard
-└── .github/workflows/        # GitHub Actions cron for weekly refresh
+├── utils/                    # EDGAR, yfinance, scoring helpers
+├── data/processed/           # CSV/JSON artifacts used by the dashboard
+└── .github/workflows/        # Weekly refresh workflow
 ```
 
-## Run locally
+## Run Locally
+
 ```bash
 pip install -r requirements.txt
 
-# One-time: rebuild the training dataset
-python collect_data.py --control-limit 90
+# Rebuild training artifacts
+python collect_data.py --control-limit 120
 python feature_engineering.py
 python train_models.py
 
-# Score the live S&P 500 (takes ~5 minutes)
+# Refresh S&P 500 scores
 python refresh_sp500.py
 
 # Launch dashboard
 streamlit run dashboard/app.py
 ```
 
-## Data refresh on GitHub Actions
-The workflow at `.github/workflows/refresh.yml` runs every Sunday at 22:00 UTC, re-pulls SEC data for all S&P 500 companies, and commits the updated CSV back to the repo. To trigger a manual refresh, go to the **Actions** tab on GitHub and click "Run workflow".
+Quick smoke test:
 
-When deployed on Streamlit Community Cloud, the app auto-redeploys whenever this workflow pushes new data — so the dashboard always shows data that is at most 7 days old.
+```bash
+python refresh_sp500.py --limit 25
+streamlit run dashboard/app.py
+```
+
+## Deployment
+
+The GitHub Actions workflow at `.github/workflows/refresh.yml` runs weekly. It rebuilds model artifacts, refreshes S&P 500 scores, and commits updated dashboard data files back to the repo. Streamlit Community Cloud redeploys when those files change.
+
+## Limitations
+
+- This is a prototype screening tool, not a production credit model.
+- Filing-risk scores are not calibrated guarantees.
+- Historical bankruptcy labels depend on available public filing metadata.
+- yfinance often lacks delisted historical tickers, so the stock-price signal is intentionally limited to verified examples.

@@ -32,14 +32,6 @@ print(f"  Loaded {len(df)} rows, {len(df.columns)} columns")
 # ── Step 2: Fix known data quality issues ─────────────────────────────────────
 print("\nFixing data quality issues...")
 
-# Circuit City (CCTYQ) was accidentally given J&J's CIK (0000200406).
-# Circuit City was a mid-size electronics retailer — total assets ~$3B.
-# J&J is a $200B healthcare giant. We can detect the collision by size.
-# Fix: remove Circuit City since its financial data is actually J&J's.
-before = len(df)
-df = df[~((df["ticker"] == "CCTYQ") & (df["total_assets"] > 100e9))]
-print(f"  Removed {before - len(df)} row(s) with CIK collision (CCTYQ/JNJ)")
-
 # Lehman Brothers shows total_assets of $8.3M (clearly wrong — it was $691B).
 # This is because EDGAR only has their post-bankruptcy wind-down entity.
 # Fix: drop Lehman (can't train on bad data — better to have no row than a wrong one).

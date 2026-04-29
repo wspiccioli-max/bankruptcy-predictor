@@ -9,7 +9,9 @@ scaling, and model fitting happen inside each cross-validation fold. This avoids
 preprocessing leakage from held-out companies into the training folds.
 """
 
+import json
 import pickle
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -165,6 +167,19 @@ comparison = pd.DataFrame(comparison_rows)
 comparison.to_csv(RESULTS_DIR / "model_comparison.csv", index=False)
 print("\nSaved -> data/processed/model_comparison.csv")
 
+training_metadata = {
+    "trained_at_utc": datetime.now(timezone.utc).isoformat(timespec="minutes"),
+    "scoring_model": "Logistic Regression",
+    "training_sample_size": int(len(df)),
+    "filing_positive_count": int(df[label_col].sum()),
+    "control_count": int((df[label_col] == 0).sum()),
+    "cv_splits": int(n_splits),
+}
+(RESULTS_DIR / "training_metadata.json").write_text(
+    json.dumps(training_metadata, indent=2) + "\n"
+)
+print("Saved -> data/processed/training_metadata.json")
+
 print("\nSaving model artifacts...")
 with open(MODELS_DIR / "logistic_model.pkl", "wb") as f:
     pickle.dump({
@@ -173,6 +188,7 @@ with open(MODELS_DIR / "logistic_model.pkl", "wb") as f:
         "features": MODEL_FEATURES,
         "label": "bankruptcy_filing",
         "cv_splits": n_splits,
+        "metadata": training_metadata,
     }, f)
 print("  Saved -> models/logistic_model.pkl")
 

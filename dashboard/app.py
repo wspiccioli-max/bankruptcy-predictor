@@ -32,6 +32,7 @@ page = st.sidebar.radio(
     "Navigate",
     [
         "🏆  S&P 500 Leaderboard",
+        "📌  Watchlist",
         "🔍  Company Lookup",
         "📊  Model Validation",
     ],
@@ -44,13 +45,20 @@ st.sidebar.markdown(
     "- yfinance market data\n\n"
     "**Models**\n"
     "- Logistic Regression\n"
-    "- Altman Z-Score\n"
-    "- Fraud Risk Score"
+    "- Random Forest\n"
+    "- Altman Z-Score (rule-based benchmark)\n"
+    "- Fraud Risk Score (rule-based indicator)\n\n"
+    "**Focus**\n"
+    "- Estimated bankruptcy filing risk"
 )
 
 # ── Route to the selected page ────────────────────────────────────────────────
 if page == "🏆  S&P 500 Leaderboard":
     from dashboard.page1_leaderboard import render
+    render()
+
+elif page == "📌  Watchlist":
+    from dashboard.page4_watchlist import render
     render()
 
 elif page == "🔍  Company Lookup":

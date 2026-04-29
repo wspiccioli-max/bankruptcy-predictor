@@ -44,7 +44,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/processed/model_comparison.csv data/processed/predictions.csv data/processed/feature_importance.csv data/processed/sp500_predictions.csv data/raw/sp500_list.csv
+          git add data/processed/model_comparison.csv data/processed/predictions.csv data/processed/feature_importance.csv data/processed/training_metadata.json data/processed/sp500_predictions.csv data/raw/sp500_list.csv
           if git diff --cached --quiet; then
             echo "No data changes this run."
           else
