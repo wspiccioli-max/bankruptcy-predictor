@@ -1,8 +1,12 @@
 {
-  "trained_at_utc": "2026-04-29T04:01+00:00",
+  "trained_at_utc": "2026-04-29T16:26+00:00",
   "scoring_model": "Logistic Regression",
   "training_sample_size": 178,
   "filing_positive_count": 44,
   "control_count": 134,
-  "cv_splits": 5
+  "cv_splits": 5,
+  "validation_group_column": "ticker",
+  "unique_validation_groups": 178,
+  "duplicate_group_rows": 0,
+  "holdout_sample_size": 45
 }

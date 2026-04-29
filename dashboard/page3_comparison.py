@@ -218,8 +218,8 @@ def render():
     st.title("📊 Model Validation — Historical Backtest")
     st.caption(
         "Evaluates bankruptcy filing risk models on historical filing companies "
-        "and public controls. Metrics are cross-validated with preprocessing "
-        "inside each fold."
+        "and public controls. This is prototype screening performance, not "
+        "real-world predictive accuracy."
     )
     st.caption(methodology_caption())
     st.caption(PROBABILITY_DISCLAIMER)
@@ -236,14 +236,17 @@ def render():
     for col in ["Accuracy", "Precision", "Recall"]:
         if col in display_compare.columns and pd.api.types.is_numeric_dtype(display_compare[col]):
             display_compare[col] = display_compare[col].apply(lambda x: f"{x:.1%}")
-    if "ROC-AUC" in display_compare.columns and pd.api.types.is_numeric_dtype(display_compare["ROC-AUC"]):
-        display_compare["ROC-AUC"] = display_compare["ROC-AUC"].apply(lambda x: f"{x:.3f}")
+    for col in ["ROC-AUC", "Brier"]:
+        if col in display_compare.columns and pd.api.types.is_numeric_dtype(display_compare[col]):
+            display_compare[col] = display_compare[col].apply(lambda x: f"{x:.3f}")
     st.dataframe(display_compare, use_container_width=True, hide_index=True)
 
     st.info(
         "The label is bankruptcy filing risk, not final liquidation. Positive "
         "examples use the last available 10-K before the filing date; controls "
-        "come from public companies without a known filing at collection time."
+        "come from public companies without a known filing at collection time. "
+        "High metrics may reflect a curated educational dataset and may not "
+        "generalize to larger real-world samples."
     )
 
     st.markdown("---")

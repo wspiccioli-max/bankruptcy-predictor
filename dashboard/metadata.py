@@ -22,6 +22,8 @@ def methodology_caption() -> str:
         f"Training sample: {meta['training_sample_size']} "
         f"({meta['filing_positive_count']} filing-positive, "
         f"{meta['control_count']} controls) · "
+        f"Validation groups: {meta.get('unique_validation_groups', 'n/a')} "
+        f"by {meta.get('validation_group_column', 'ticker')} · "
         f"S&P 500 scoring model: {meta['scoring_model']} · "
         f"Trained: {meta['trained_at_utc']}"
     )

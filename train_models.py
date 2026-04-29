@@ -21,12 +21,19 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
+    brier_score_loss,
     confusion_matrix,
     precision_score,
     recall_score,
     roc_auc_score,
 )
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.model_selection import (
+    StratifiedGroupKFold,
+    StratifiedKFold,
+    cross_val_predict,
+    train_test_split,
+)
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -45,14 +52,16 @@ MODEL_FEATURES = [
 ]
 
 
-def _metric_row(name: str, y_true, preds, scores, sample_n: int) -> dict:
+def _metric_row(name: str, evaluation: str, y_true, preds, scores, sample_n: int) -> dict:
     auc = roc_auc_score(y_true, scores) if len(np.unique(y_true)) > 1 else np.nan
     return {
         "Model": name,
+        "Evaluation": evaluation,
         "Accuracy": accuracy_score(y_true, preds),
         "ROC-AUC": auc,
         "Precision": precision_score(y_true, preds, zero_division=0),
         "Recall": recall_score(y_true, preds, zero_division=0),
+        "Brier": brier_score_loss(y_true, scores),
         "Sample N": sample_n,
     }
 
@@ -62,6 +71,7 @@ def _print_metrics(row: dict, cm: np.ndarray) -> None:
     print(f"  ROC-AUC  : {row['ROC-AUC']:.3f}")
     print(f"  Precision: {row['Precision']:.1%}")
     print(f"  Recall   : {row['Recall']:.1%}")
+    print(f"  Brier    : {row['Brier']:.3f}")
     print("\n  Confusion Matrix:")
     print("              Predicted Control  Predicted Filing")
     print(f"  True Control        {cm[0,0]:>3}               {cm[0,1]:>3}")
@@ -83,11 +93,33 @@ print(
 
 X = df[MODEL_FEATURES]
 y = df[label_col].values
+group_col = "cik" if "cik" in df.columns else "ticker"
+groups = df[group_col].astype(str).values
+unique_groups = pd.Series(groups).nunique()
+duplicate_group_rows = int(len(df) - unique_groups)
+if duplicate_group_rows:
+    print(f"  Grouped validation: {group_col}; {duplicate_group_rows} repeated group row(s)")
+else:
+    print(f"  Grouped validation: one row per {group_col}; no repeated groups")
 min_class = int(pd.Series(y).value_counts().min())
 if min_class < 2:
     raise ValueError("Need at least two samples in each class for stratified CV.")
 n_splits = min(5, min_class)
-cv = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
+cv = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42)
+
+all_indices = np.arange(len(df))
+if duplicate_group_rows:
+    train_idx, test_idx = next(
+        StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
+        .split(X, y, groups)
+    )
+else:
+    train_idx, test_idx = train_test_split(
+        all_indices,
+        test_size=0.25,
+        stratify=y,
+        random_state=42,
+    )
 
 models = {
     "Logistic Regression": Pipeline([
@@ -101,13 +133,13 @@ models = {
     ]),
     "Random Forest": Pipeline([
         ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
-        ("model", RandomForestClassifier(
+        ("model", CalibratedClassifierCV(RandomForestClassifier(
             n_estimators=300,
             min_samples_leaf=2,
             class_weight="balanced_subsample",
             random_state=42,
             n_jobs=-1,
-        )),
+        ), cv=3, method="sigmoid")),
     ]),
 }
 
@@ -119,12 +151,22 @@ for model_name, pipeline in models.items():
     print("=" * 60)
     print(model_name.upper())
     print("=" * 60)
-    probs = cross_val_predict(pipeline, X, y, cv=cv, method="predict_proba")[:, 1]
+    probs = cross_val_predict(
+        pipeline, X, y, cv=cv, groups=groups, method="predict_proba"
+    )[:, 1]
     preds = (probs >= 0.5).astype(int)
-    row = _metric_row(model_name, y, preds, probs, len(y))
+    row = _metric_row(model_name, "Group CV", y, preds, probs, len(y))
     cm = confusion_matrix(y, preds, labels=[0, 1])
     _print_metrics(row, cm)
     comparison_rows.append(row)
+
+    holdout_model = pipeline.fit(X.iloc[train_idx], y[train_idx])
+    holdout_probs = holdout_model.predict_proba(X.iloc[test_idx])[:, 1]
+    holdout_preds = (holdout_probs >= 0.5).astype(int)
+    holdout_row = _metric_row(
+        model_name, "Holdout", y[test_idx], holdout_preds, holdout_probs, len(test_idx)
+    )
+    comparison_rows.append(holdout_row)
 
     prefix = "lr" if model_name == "Logistic Regression" else "rf"
     prediction_cols[f"{prefix}_prob_filing"] = probs
@@ -143,13 +185,21 @@ print("=" * 60)
 print("RULE-BASED BENCHMARKS")
 print("=" * 60)
 
+majority = int(pd.Series(y).mode().iloc[0])
+base_scores = np.full(len(test_idx), y[train_idx].mean())
+base_preds = np.full(len(test_idx), majority)
+comparison_rows.append(_metric_row(
+    "Majority Class", "Holdout baseline", y[test_idx], base_preds, base_scores, len(test_idx)
+))
+
 z_mask = df["z_score"].notna()
 z_sub = df[z_mask]
 if len(z_sub) > 0:
     y_z = z_sub[label_col].astype(int).values
     z_preds = (z_sub["z_score"] < 1.81).astype(int).values
     z_scores = -z_sub["z_score"].values
-    z_row = _metric_row("Altman Z-Score", y_z, z_preds, z_scores, len(y_z))
+    z_probs = 1 / (1 + np.exp(z_sub["z_score"].clip(-20, 20)))
+    z_row = _metric_row("Altman Z-Score", "Full sample benchmark", y_z, z_preds, z_probs, len(y_z))
     z_cm = confusion_matrix(y_z, z_preds, labels=[0, 1])
     print("\nAltman Z-Score")
     _print_metrics(z_row, z_cm)
@@ -157,7 +207,8 @@ if len(z_sub) > 0:
 
 f_preds = (df["fraud_risk_score"] >= 2).astype(int).values
 f_scores = df["fraud_risk_score"].values
-f_row = _metric_row("Fraud Risk Score", y, f_preds, f_scores, len(y))
+f_probs = (df["fraud_risk_score"] / 5).clip(0, 1).values
+f_row = _metric_row("Fraud Risk Score", "Full sample benchmark", y, f_preds, f_probs, len(y))
 f_cm = confusion_matrix(y, f_preds, labels=[0, 1])
 print("\nFraud Risk Score")
 _print_metrics(f_row, f_cm)
@@ -172,9 +223,13 @@ training_metadata = {
     "scoring_model": "Logistic Regression",
     "training_sample_size": int(len(df)),
     "filing_positive_count": int(df[label_col].sum()),
-    "control_count": int((df[label_col] == 0).sum()),
-    "cv_splits": int(n_splits),
-}
+        "control_count": int((df[label_col] == 0).sum()),
+        "cv_splits": int(n_splits),
+        "validation_group_column": group_col,
+        "unique_validation_groups": int(unique_groups),
+        "duplicate_group_rows": duplicate_group_rows,
+        "holdout_sample_size": int(len(test_idx)),
+    }
 (RESULTS_DIR / "training_metadata.json").write_text(
     json.dumps(training_metadata, indent=2) + "\n"
 )

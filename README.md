@@ -11,6 +11,8 @@ Model probabilities are estimated filing-risk similarity scores, not certainty, 
 - **Filing examples:** use the final 10-K available before the bankruptcy filing date where available, avoiding post-filing or successor filings.
 - **Controls:** public companies without a known bankruptcy filing at collection time.
 - **Supervised models:** Logistic Regression and Random Forest.
+- **Validation:** grouped cross-validation keeps the same ticker/company group out of both train and validation folds. The current artifact has one row per ticker, 178 validation groups, and a separate 45-row stratified holdout.
+- **Probability quality:** model comparison includes Brier score. Random Forest probabilities are sigmoid-calibrated with `CalibratedClassifierCV`.
 - **Benchmarks:** Altman Z-Score and Fraud Risk Score are rule-based indicators, not supervised models.
 - **S&P 500 scoring model:** Logistic Regression.
 - **Market signal demo:** verified pre-filing yfinance price examples are currently limited to `PCG` and `CZR`; broader historical ticker coverage is a future enhancement because delisted symbols are not reliably available.
@@ -20,7 +22,7 @@ Model probabilities are estimated filing-risk similarity scores, not certainty, 
 - **S&P 500 Leaderboard:** latest S&P 500 filing-risk scores and period-over-period deltas.
 - **Watchlist:** top current S&P 500 companies by estimated filing risk, with risk category and financial drivers.
 - **Company Lookup:** per-company filing-risk score, filing metadata, and key ratios.
-- **Model Validation:** cross-validated metrics, model comparison, confusion matrices, feature importance, and selected pre-filing stock-price examples.
+- **Model Validation:** grouped cross-validation, holdout metrics, majority-class baseline, rule-based benchmarks, Brier score, confusion matrices, feature importance, and selected pre-filing stock-price examples.
 
 ## Project Structure
 
@@ -68,5 +70,6 @@ The GitHub Actions workflow at `.github/workflows/refresh.yml` runs weekly. It r
 
 - This is a prototype screening tool, not a production credit model.
 - Filing-risk scores are not calibrated guarantees.
+- Reported metrics are prototype screening performance on a curated educational dataset and may not generalize to larger real-world samples.
 - Historical bankruptcy labels depend on available public filing metadata.
 - yfinance often lacks delisted historical tickers, so the stock-price signal is intentionally limited to verified examples.
