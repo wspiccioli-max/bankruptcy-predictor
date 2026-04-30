@@ -6,6 +6,7 @@ filing risk. This is not investment advice.
 """
 
 from pathlib import Path
+from typing import Optional
 
 import pandas as pd
 import streamlit as st
@@ -27,7 +28,7 @@ def load_sp500() -> pd.DataFrame:
     return pd.read_csv(SP500_PATH)
 
 
-def _z_score(row) -> float | None:
+def _z_score(row) -> Optional[float]:
     parts = [row.get(f"current_z_x{i}") for i in range(1, 6)]
     if any(pd.isna(v) for v in parts):
         return None
