@@ -30,6 +30,7 @@ FEAT_PATH    = ROOT / "data/processed/features.csv"
 MODEL_PATH   = ROOT / "models/logistic_model.pkl"
 COMPARE_PATH = ROOT / "data/processed/model_comparison.csv"
 FI_PATH      = ROOT / "data/processed/feature_importance.csv"
+PRICE_SIGNAL_PATH = ROOT / "data/processed/pre_filing_price_signals.csv"
 
 MARKET_SIGNAL_SYMBOLS = {
     # yfinance no longer serves most delisted/Q tickers. Keep this list small
@@ -72,6 +73,18 @@ def load_price_window(yahoo_symbol: str, filing_date: str) -> pd.DataFrame:
     if isinstance(close, pd.DataFrame):
         close = close.iloc[:, 0]
     return pd.DataFrame({"Date": close.index, "Close": close.values})
+
+
+@st.cache_data
+def load_cached_price_window(ticker: str) -> pd.DataFrame:
+    if not PRICE_SIGNAL_PATH.exists():
+        return pd.DataFrame()
+    cache = pd.read_csv(PRICE_SIGNAL_PATH)
+    cache = cache[cache["ticker"] == ticker].copy()
+    if cache.empty:
+        return pd.DataFrame()
+    cache["Date"] = pd.to_datetime(cache["date"])
+    return cache[["Date", "close"]].rename(columns={"close": "Close"})
 
 
 def make_roc_figure(df: pd.DataFrame) -> go.Figure:
@@ -356,7 +369,7 @@ def render():
     )
 
     st.markdown("---")
-    st.subheader("Pre-Filing Stock Price Signal")
+    st.subheader("Verified Historical Pre-Filing Stock Price Signal")
     st.caption(
         "Demonstrates verified historical market-signal examples for selected "
         "filing companies. Broader ticker coverage is a future enhancement "
@@ -378,7 +391,11 @@ def render():
     selected = st.selectbox("Historical filing company", list(choices.keys()))
     row = choices[selected]
     yahoo_symbol = MARKET_SIGNAL_SYMBOLS[row["ticker"]]
-    prices = load_price_window(yahoo_symbol, row["filing_date"])
+    prices = load_cached_price_window(row["ticker"])
+    source = "local cached CSV"
+    if prices.empty:
+        prices = load_price_window(yahoo_symbol, row["filing_date"])
+        source = "yfinance fallback"
     if prices.empty:
         st.info("Future enhancement: yfinance did not return this verified symbol today.")
         return
@@ -392,7 +409,7 @@ def render():
     start_price = float(before["Close"].iloc[0])
     end_price = float(before["Close"].iloc[-1])
     decline = (end_price / start_price - 1) if start_price else np.nan
-    st.caption(f"Yahoo symbol used: `{yahoo_symbol}`")
+    st.caption(f"Yahoo symbol used: `{yahoo_symbol}` · Source: {source}")
     st.metric("Price move in year before filing", f"{decline:+.1%}")
 
     fig = go.Figure()
