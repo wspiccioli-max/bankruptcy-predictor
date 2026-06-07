@@ -174,7 +174,6 @@ EME,Emcor,0000105634,Industrials,Construction & Engineering,2025-09-22
 EMR,Emerson Electric,0000032604,Industrials,Electrical Components & Equipment,1965-03-31
 ETR,Entergy,0000065984,Utilities,Electric Utilities,1957-03-04
 EOG,EOG Resources,0000821189,Energy,Oil & Gas Exploration & Production,2000-11-02
-EPAM,EPAM Systems,0001352010,Information Technology,IT Consulting & Other Services,2021-12-14
 EQT,EQT Corporation,0000033213,Energy,Oil & Gas Exploration & Production,2022-10-03
 EFX,Equifax,0000033185,Industrials,Research & Consulting Services,1997-06-19
 EQIX,Equinix,0001101239,Real Estate,Data Center REITs,2015-03-20
@@ -197,6 +196,7 @@ FICO,Fair Isaac,0000814547,Information Technology,Application Software,2023-03-2
 FAST,Fastenal,0000815556,Industrials,Trading Companies & Distributors,2008-09-15
 FRT,Federal Realty Investment Trust,0000034903,Real Estate,Retail REITs,2016-02-01
 FDX,FedEx,0001048911,Industrials,Air Freight & Logistics,1980-12-31
+FDXF,FedEx Freight,0002082247,Industrials,Cargo Ground Transportation,2026-06-01
 FIS,Fidelity National Information Services,0001136893,Financials,Transaction & Payment Processing Services,2006-11-10
 FITB,Fifth Third Bancorp,0000035527,Financials,Regional Banks,1996-03-29
 FSLR,First Solar,0001274494,Information Technology,Semiconductors,2022-12-19
