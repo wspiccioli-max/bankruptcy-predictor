@@ -82,7 +82,6 @@ BXP,"BXP, Inc.",0001037540,Real Estate,Office REITs,2006-04-03
 CHRW,C.H. Robinson,0001043277,Industrials,Air Freight & Logistics,2007-03-02
 CDNS,Cadence Design Systems,0000813672,Information Technology,Application Software,2017-09-18
 CPT,Camden Property Trust,0000906345,Real Estate,Multi-Family Residential REITs,2022-04-04
-CPB,Campbell's Company (The),0000016732,Consumer Staples,Packaged Foods & Meats,1957-03-04
 COF,Capital One,0000927628,Financials,Consumer Finance,1998-07-01
 CAH,Cardinal Health,0000721371,Health Care,Health Care Distributors,1997-05-27
 CCL,Carnival Corporation,0000815097,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",1998-12-22
@@ -202,6 +201,7 @@ FITB,Fifth Third Bancorp,0000035527,Financials,Regional Banks,1996-03-29
 FSLR,First Solar,0001274494,Information Technology,Semiconductors,2022-12-19
 FE,FirstEnergy,0001031296,Utilities,Electric Utilities,1997-11-28
 FISV,Fiserv,0000798354,Financials,Transaction & Payment Processing Services,2001-04-02
+FLEX,Flex Ltd.,0000866374,Information Technology,Electronic Manufacturing Services,2026-06-22
 F,Ford Motor Company,0000037996,Consumer Discretionary,Automobile Manufacturers,1957-03-04
 FTNT,Fortinet,0001262039,Information Technology,Systems Software,2018-10-11
 FTV,Fortive,0001659166,Industrials,Industrial Machinery & Supplies & Components,2016-07-01
@@ -301,6 +301,7 @@ MPC,Marathon Petroleum,0001510295,Energy,Oil & Gas Refining & Marketing,2011-07-
 MAR,Marriott International,0001048286,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",1998-05-29
 MRSH,Marsh McLennan,0000062709,Financials,Insurance Brokers,1987-08-31
 MLM,Martin Marietta Materials,0000916076,Materials,Construction Materials,2014-07-02
+MRVL,Marvell Technology,0001835632,Information Technology,Semiconductors,2026-06-22
 MAS,Masco,0000062996,Industrials,Building Products,1981-06-30
 MA,Mastercard,0001141391,Financials,Transaction & Payment Processing Services,2008-07-18
 MKC,McCormick & Company,0000063754,Consumer Staples,Packaged Foods & Meats,2003-03-20
@@ -369,7 +370,6 @@ PM,Philip Morris International,0001413329,Consumer Staples,Tobacco,2008-03-31
 PSX,Phillips 66,0001534701,Energy,Oil & Gas Refining & Marketing,2012-05-01
 PNW,Pinnacle West Capital,0000764622,Utilities,Multi-Utilities,1999-10-04
 PNC,PNC Financial Services,0000713676,Financials,Diversified Banks,1988-04-30
-POOL,Pool Corporation,0000945841,Consumer Discretionary,Distributors,2020-10-07
 PPG,PPG Industries,0000079879,Materials,Specialty Chemicals,1957-03-04
 PPL,PPL Corporation,0000922224,Utilities,Electric Utilities,2001-10-01
 PFG,Principal Financial Group,0001126328,Financials,Life & Health Insurance,2002-07-22
