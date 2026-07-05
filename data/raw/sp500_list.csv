@@ -120,7 +120,6 @@ COIN,Coinbase,0001679788,Financials,Financial Exchanges & Data,2025-05-19
 CL,Colgate-Palmolive,0000021665,Consumer Staples,Household Products,1957-03-04
 CMCSA,Comcast,0001166691,Communication Services,Cable & Satellite,2002-11-19
 FIX,Comfort Systems USA,0001035983,Industrials,Construction & Engineering,2025-12-22
-CAG,Conagra Brands,0000023217,Consumer Staples,Packaged Foods & Meats,1983-08-31
 COP,ConocoPhillips,0001163165,Energy,Oil & Gas Exploration & Production,1957-03-04
 ED,Consolidated Edison,0001047862,Utilities,Multi-Utilities,1957-03-04
 STZ,Constellation Brands,0000016918,Consumer Staples,Distillers & Vintners,2005-07-01
@@ -235,7 +234,8 @@ HSY,Hershey Company (The),0000047111,Consumer Staples,Packaged Foods & Meats,195
 HPE,Hewlett Packard Enterprise,0001645590,Information Technology,"Technology Hardware, Storage & Peripherals",2015-11-02
 HLT,Hilton Worldwide,0001585689,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",2017-06-19
 HD,Home Depot (The),0000354950,Consumer Discretionary,Home Improvement Retail,1988-03-31
-HON,Honeywell,0000773840,Industrials,Industrial Conglomerates,1957-03-04
+HONA,Honeywell Aerospace,0002089271,Industrials,Aerospace & Defense,2026-06-29
+HON,Honeywell Technologies,0000773840,Industrials,Industrial Conglomerates,1957-03-04
 HRL,Hormel Foods,0000048465,Consumer Staples,Packaged Foods & Meats,2009-03-04
 HST,Host Hotels & Resorts,0001070750,Real Estate,Hotel & Resort REITs,2007-03-20
 HWM,Howmet Aerospace,0000004281,Industrials,Aerospace & Defense,2016-10-21
