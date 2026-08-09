@@ -39,7 +39,7 @@ APA,APA Corporation,0001841666,Energy,Oil & Gas Exploration & Production,1997-07
 APO,Apollo Global Management,0001858681,Financials,Asset Management & Custody Banks,2024-12-23
 AAPL,Apple Inc.,0000320193,Information Technology,"Technology Hardware, Storage & Peripherals",1982-11-30
 AMAT,Applied Materials,0000006951,Information Technology,Semiconductor Materials & Equipment,1995-03-16
-APP,AppLovin,0001751008,Information Technology,Application Software,2025-09-22
+APP,AppLovin,0001751008,Communication Services,Advertising,2025-09-22
 APTV,Aptiv,0001521332,Consumer Discretionary,Automotive Parts & Equipment,2012-12-24
 ACGL,Arch Capital Group,0000947484,Financials,Property & Casualty Insurance,2022-11-01
 ADM,Archer Daniels Midland,0000007084,Consumer Staples,Agricultural Products & Services,1957-03-04
@@ -159,14 +159,13 @@ DOW,Dow Inc.,0001751788,Materials,Commodity Chemicals,2019-04-01
 DHI,D. R. Horton,0000882184,Consumer Discretionary,Homebuilding,2005-06-22
 DTE,DTE Energy,0000936340,Utilities,Multi-Utilities,1957-03-04
 DUK,Duke Energy,0001326160,Utilities,Electric Utilities,1976-06-30
-DD,DuPont,0001666700,Materials,Specialty Chemicals,2019-06-03
+DD,DuPont,0001666700,Industrials,Industrial Conglomerates,2019-06-03
 ETN,Eaton Corporation,0001551182,Industrials,Electrical Components & Equipment,1957-03-04
 EBAY,eBay Inc.,0001065088,Consumer Discretionary,Broadline Retail,2002-07-22
 ECHO,EchoStar,0001415404,Communication Services,Wireless Telecommunication Services,2026-03-23
 ECL,Ecolab,0000031462,Materials,Specialty Chemicals,1989-01-31
 EIX,Edison International,0000827052,Utilities,Electric Utilities,1957-03-04
 EW,Edwards Lifesciences,0001099800,Health Care,Health Care Equipment,2011-04-01
-EA,Electronic Arts,0000712515,Communication Services,Interactive Home Entertainment,2002-07-22
 ELV,Elevance Health,0001156039,Health Care,Managed Health Care,2002-07-25
 EME,Emcor,0000105634,Industrials,Construction & Engineering,2025-09-22
 EMR,Emerson Electric,0000032604,Industrials,Electrical Components & Equipment,1965-03-31
@@ -187,7 +186,7 @@ EXE,Expand Energy,0000895126,Energy,Oil & Gas Exploration & Production,2025-03-2
 EXPE,Expedia Group,0001324424,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",2007-10-02
 EXPD,Expeditors International,0000746515,Industrials,Air Freight & Logistics,2007-10-10
 EXR,Extra Space Storage,0001289490,Real Estate,Self-Storage REITs,2016-01-19
-XOM,ExxonMobil,0000034088,Energy,Integrated Oil & Gas,1957-03-04
+XOM,ExxonMobil,0002115436,Energy,Integrated Oil & Gas,1957-03-04
 FFIV,"F5, Inc.",0001048695,Information Technology,Communications Equipment,2010-12-20
 FDS,FactSet,0001013237,Financials,Financial Exchanges & Data,2021-12-20
 FICO,Fair Isaac,0000814547,Information Technology,Application Software,2023-03-20
@@ -195,6 +194,7 @@ FAST,Fastenal,0000815556,Industrials,Trading Companies & Distributors,2008-09-15
 FRT,Federal Realty Investment Trust,0000034903,Real Estate,Retail REITs,2016-02-01
 FDX,FedEx,0001048911,Industrials,Air Freight & Logistics,1980-12-31
 FDXF,FedEx Freight,0002082247,Industrials,Cargo Ground Transportation,2026-06-01
+FERG,Ferguson Enterprises,0002011641,Industrials,Building Products,2026-08-05
 FIS,Fidelity National Information Services,0001136893,Financials,Transaction & Payment Processing Services,2006-11-10
 FITB,Fifth Third Bancorp,0000035527,Financials,Regional Banks,1996-03-29
 FSLR,First Solar,0001274494,Information Technology,Semiconductors,2022-12-19

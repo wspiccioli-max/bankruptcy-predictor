@@ -1,5 +1,5 @@
 {
-  "trained_at_utc": "2026-08-02T22:47+00:00",
+  "trained_at_utc": "2026-08-09T22:21+00:00",
   "scoring_model": "Logistic Regression",
   "training_sample_size": 178,
   "filing_positive_count": 44,
