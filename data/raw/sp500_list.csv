@@ -326,7 +326,7 @@ MCO,Moody's Corporation,0001059556,Financials,Financial Exchanges & Data,1998-07
 MS,Morgan Stanley,0000895421,Financials,Investment Banking & Brokerage,1993-07-29
 MOS,Mosaic Company (The),0001285785,Materials,Fertilizers & Agricultural Chemicals,2011-09-26
 MSI,Motorola Solutions,0000068505,Information Technology,Communications Equipment,1957-03-04
-MSCI,MSCI Inc.,0001408198,Financials,Financial Exchanges & Data,2018-04-04
+MSCI,MSCI,0001408198,Financials,Financial Exchanges & Data,2018-04-04
 NDAQ,"Nasdaq, Inc.",0001120193,Financials,Financial Exchanges & Data,2008-10-22
 NTAP,NetApp,0001002047,Information Technology,"Technology Hardware, Storage & Peripherals",1999-06-25
 NFLX,Netflix,0001065280,Communication Services,Movies & Entertainment,2010-12-20
@@ -346,7 +346,7 @@ NUE,Nucor,0000073309,Materials,Steel,1985-04-30
 NVDA,Nvidia,0001045810,Information Technology,Semiconductors,2001-11-30
 NVR,"NVR, Inc.",0000906163,Consumer Discretionary,Homebuilding,2019-09-26
 NXPI,NXP Semiconductors,0001413447,Information Technology,Semiconductors,2021-03-22
-ORLY,O’Reilly Automotive,0000898173,Consumer Discretionary,Automotive Retail,2009-03-27
+ORLY,O'Reilly Automotive,0000898173,Consumer Discretionary,Automotive Retail,2009-03-27
 OXY,Occidental Petroleum,0000797468,Energy,Oil & Gas Exploration & Production,1957-03-04
 ODFL,Old Dominion,0000878927,Industrials,Cargo Ground Transportation,2019-12-09
 OMC,Omnicom Group,0000029989,Communication Services,Advertising,1997-12-31
@@ -393,7 +393,7 @@ REG,Regency Centers,0000910606,Real Estate,Retail REITs,2017-03-02
 REGN,Regeneron Pharmaceuticals,0000872589,Health Care,Biotechnology,2013-05-01
 RF,Regions Financial Corporation,0001281761,Financials,Regional Banks,1998-08-28
 RSG,Republic Services,0001060391,Industrials,Environmental & Facilities Services,2008-12-05
-RMD,ResMed,0000943819,Health Care,Health Care Equipment,2017-07-26
+RMD,ResMed|,0000943819,Health Care,Health Care Equipment,2017-07-26
 RVTY,Revvity,0000031791,Health Care,Health Care Equipment,1985-05-31
 HOOD,Robinhood Markets,0001783879,Financials,Investment Banking & Brokerage,2025-09-22
 ROK,Rockwell Automation,0001024478,Industrials,Electrical Components & Equipment,2000-03-12
