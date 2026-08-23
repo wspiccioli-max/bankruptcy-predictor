@@ -52,7 +52,6 @@ ATO,Atmos Energy,0000731802,Utilities,Gas Utilities,2019-02-15
 ADSK,Autodesk,0000769397,Information Technology,Application Software,1989-12-01
 ADP,Automatic Data Processing,0000008670,Industrials,Human Resource & Employment Services,1981-03-31
 AZO,AutoZone,0000866787,Consumer Discretionary,Automotive Retail,1997-01-02
-AVB,AvalonBay Communities,0000915912,Real Estate,Multi-Family Residential REITs,2007-01-10
 AVY,Avery Dennison,0000008818,Materials,Paper & Plastic Packaging Products & Materials,1987-12-31
 AXON,Axon Enterprise,0001069183,Industrials,Aerospace & Defense,2023-05-04
 BKR,Baker Hughes,0001701605,Energy,Oil & Gas Equipment & Services,2017-07-07
@@ -174,7 +173,6 @@ EOG,EOG Resources,0000821189,Energy,Oil & Gas Exploration & Production,2000-11-0
 EQT,EQT Corporation,0000033213,Energy,Oil & Gas Exploration & Production,2022-10-03
 EFX,Equifax,0000033185,Industrials,Research & Consulting Services,1997-06-19
 EQIX,Equinix,0001101239,Real Estate,Data Center REITs,2015-03-20
-EQR,Equity Residential,0000906107,Real Estate,Multi-Family Residential REITs,2001-12-03
 ERIE,Erie Indemnity,0000922621,Financials,Insurance Brokers,2024-09-23
 ESS,Essex Property Trust,0000920522,Real Estate,Multi-Family Residential REITs,2014-04-02
 EL,Estée Lauder Companies (The),0001001250,Consumer Staples,Personal Care Products,2006-01-05
@@ -387,6 +385,7 @@ DGX,Quest Diagnostics,0001022079,Health Care,Health Care Services,2002-12-12
 Q,Qnity Electronics,0002058873,Information Technology,Semiconductor Materials & Equipment,2025-11-03
 RL,Ralph Lauren Corporation,0001037038,Consumer Discretionary,"Apparel, Accessories & Luxury Goods",2007-02-02
 RJF,Raymond James Financial,0000720005,Financials,Investment Banking & Brokerage,2017-03-20
+RDDT,Reddit,0001713445,Communication Services,Interactive Media & Services,2026-08-18
 RTX,RTX Corporation,0000101829,Industrials,Aerospace & Defense,1957-03-04
 O,Realty Income,0000726728,Real Estate,Retail REITs,2015-04-07
 REG,Regency Centers,0000910606,Real Estate,Retail REITs,2017-03-02
@@ -476,6 +475,7 @@ VTRS,Viatris,0001792044,Health Care,Pharmaceuticals,2004-04-23
 VICI,Vici Properties,0001705696,Real Estate,Hotel & Resort REITs,2022-06-08
 V,Visa Inc.,0001403161,Financials,Transaction & Payment Processing Services,2009-12-21
 VST,Vistra Corp.,0001692819,Utilities,Electric Utilities,2024-05-08
+VMRK,Vivmark Residential,0000906107,Real Estate,Multi-Family Residential REITs,2001-12-03
 VMC,Vulcan Materials Company,0001396009,Materials,Construction Materials,1999-06-30
 WRB,W. R. Berkley Corporation,0000011544,Financials,Property & Casualty Insurance,2019-12-05
 GWW,W. W. Grainger,0000277135,Industrials,Industrial Machinery & Supplies & Components,1981-06-30
