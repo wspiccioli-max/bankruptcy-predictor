@@ -66,6 +66,7 @@ BIIB,Biogen,0000875045,Health Care,Biotechnology,2003-11-13
 BLK,BlackRock,0002012383,Financials,Asset Management & Custody Banks,2011-04-04
 BX,Blackstone Inc.,0001393818,Financials,Asset Management & Custody Banks,2023-09-18
 XYZ,"Block, Inc.",0001512673,Financials,Transaction & Payment Processing Services,2025-07-23
+BE,Bloom Energy,0001664703,Industrials,Electrical Components & Equipment,2026-09-21
 BNY,BNY Mellon,0001390777,Financials,Asset Management & Custody Banks,1995-03-31
 BA,Boeing,0000012927,Industrials,Aerospace & Defense,1957-03-04
 BKNG,Booking Holdings,0001075531,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",2009-11-06
@@ -75,7 +76,6 @@ AVGO,Broadcom,0001730168,Information Technology,Semiconductors,2014-05-08
 BR,Broadridge Financial Solutions,0001383312,Industrials,Data Processing & Outsourced Services,2018-06-18
 BRO,Brown & Brown,0000079282,Financials,Insurance Brokers,2021-09-20
 BF-B,Brown–Forman,0000014693,Consumer Staples,Distillers & Vintners,1982-10-31
-BLDR,Builders FirstSource,0001316835,Industrials,Building Products,2023-12-18
 BG,Bunge Global,0001996862,Consumer Staples,Agricultural Products & Services,2023-03-15
 BXP,"BXP, Inc.",0001037540,Real Estate,Office REITs,2006-04-03
 CHRW,C.H. Robinson,0001043277,Industrials,Air Freight & Logistics,2007-03-02
@@ -178,6 +178,7 @@ ESS,Essex Property Trust,0000920522,Real Estate,Multi-Family Residential REITs,2
 EL,Estée Lauder Companies (The),0001001250,Consumer Staples,Personal Care Products,2006-01-05
 EG,Everest Group,0001095073,Financials,Reinsurance,2017-06-19
 EVRG,Evergy,0001711269,Utilities,Electric Utilities,2018-06-05
+P,Everpure,0001474432,Information Technology,"Technology Hardware, Storage & Peripherals",2026-09-21
 ES,Eversource Energy,0000072741,Utilities,Electric Utilities,2009-07-24
 EXC,Exelon,0001109357,Utilities,Electric Utilities,1957-03-04
 EXE,Expand Energy,0000895126,Energy,Oil & Gas Exploration & Production,2025-03-24
@@ -246,6 +247,7 @@ IBM,IBM,0000051143,Information Technology,IT Consulting & Other Services,1957-03
 IEX,IDEX Corporation,0000832101,Industrials,Industrial Machinery & Supplies & Components,2019-08-09
 IDXX,Idexx Laboratories,0000874716,Health Care,Health Care Equipment,2017-01-05
 ITW,Illinois Tool Works,0000049826,Industrials,Industrial Machinery & Supplies & Components,1986-02-28
+ILMN,"Illumina, Inc.",0001110803,Health Care,Life Sciences Tools & Services,2026-09-21
 INCY,Incyte,0000879169,Health Care,Biotechnology,2017-02-28
 IR,Ingersoll Rand,0001699150,Industrials,Industrial Machinery & Supplies & Components,2020-03-03
 PODD,Insulet Corporation,0001145197,Health Care,Health Care Equipment,2023-03-15
@@ -316,7 +318,6 @@ MU,Micron Technology,0000723125,Information Technology,Semiconductors,1994-09-27
 MSFT,Microsoft,0000789019,Information Technology,Systems Software,1994-06-01
 MAA,Mid-America Apartment Communities,0000912595,Real Estate,Multi-Family Residential REITs,2016-12-02
 MRNA,Moderna,0001682852,Health Care,Biotechnology,2021-07-21
-TAP,Molson Coors Beverage Company,0000024545,Consumer Staples,Brewers,1976-06-30
 MDLZ,Mondelez International,0001103982,Consumer Staples,Packaged Foods & Meats,2012-10-02
 MPWR,Monolithic Power Systems,0001280452,Information Technology,Semiconductors,2021-02-12
 MNST,Monster Beverage,0000865752,Consumer Staples,Soft Drinks & Non-alcoholic Beverages,2012-06-28
@@ -443,7 +444,6 @@ TXT,Textron,0000217346,Industrials,Aerospace & Defense,1978-12-31
 TMO,Thermo Fisher Scientific,0000097745,Health Care,Life Sciences Tools & Services,2004-08-03
 TJX,TJX Companies,0000109198,Consumer Discretionary,Apparel Retail,1985-09-30
 TKO,TKO Group Holdings,0001973266,Communication Services,Movies & Entertainment,2025-03-24
-TTD,Trade Desk (The),0001671933,Communication Services,Advertising,2025-07-18
 TSCO,Tractor Supply,0000916365,Consumer Discretionary,Other Specialty Retail,2014-01-24
 TT,Trane Technologies,0001466258,Industrials,Building Products,2010-11-17
 TDG,TransDigm Group,0001260221,Industrials,Aerospace & Defense,2016-06-03
