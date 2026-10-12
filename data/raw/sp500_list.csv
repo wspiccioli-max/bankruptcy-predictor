@@ -127,7 +127,6 @@ COO,Cooper Companies (The),0000711404,Health Care,Health Care Supplies,2016-09-2
 CPRT,Copart,0000900075,Industrials,Diversified Support Services,2018-07-02
 GLW,Corning Inc.,0000024741,Information Technology,Electronic Components,1995-02-27
 CPAY,Corpay,0001175454,Financials,Transaction & Payment Processing Services,2018-06-20
-CTVA,Corteva,0001755672,Materials,Fertilizers & Agricultural Chemicals,2019-06-03
 CSGP,CoStar Group,0001057352,Real Estate,Real Estate Services,2022-09-19
 COST,Costco,0000909832,Consumer Staples,Consumer Staples Merchandise Retail,1993-10-01
 CRH,CRH plc,0000849395,Materials,Construction Materials,2025-12-22
@@ -357,7 +356,6 @@ PCAR,Paccar,0000075362,Industrials,Construction Machinery & Heavy Transportation
 PKG,Packaging Corporation of America,0000075677,Materials,Paper & Plastic Packaging Products & Materials,2017-07-26
 PLTR,Palantir Technologies,0001321655,Information Technology,Application Software,2024-09-23
 PANW,Palo Alto Networks,0001327567,Information Technology,Systems Software,2023-06-20
-PSKY,Paramount Skydance Corporation,0002041610,Communication Services,Movies & Entertainment,1994-09-30
 PH,Parker Hannifin,0000076334,Industrials,Industrial Machinery & Supplies & Components,1985-11-30
 PAYX,Paychex,0000723531,Industrials,Human Resource & Employment Services,1998-10-01
 PYPL,PayPal,0001633917,Financials,Transaction & Payment Processing Services,2015-07-20
@@ -411,6 +409,7 @@ SRE,Sempra,0001032208,Utilities,Multi-Utilities,2017-03-17
 NOW,ServiceNow,0001373715,Information Technology,Systems Software,2019-11-21
 SHW,Sherwin-Williams,0000089800,Materials,Specialty Chemicals,1964-06-30
 SPG,Simon Property Group,0001063761,Real Estate,Retail REITs,2002-06-26
+SKYD,Skydance Corporation,0002041610,Communication Services,Movies & Entertainment,1994-09-30
 SWKS,Skyworks Solutions,0000004127,Information Technology,Semiconductors,2015-03-12
 SJM,J.M. Smucker Company (The),0000091419,Consumer Staples,Packaged Foods & Meats,2008-11-06
 SW,Smurfit Westrock,0002005951,Materials,Paper & Plastic Packaging Products & Materials,2024-07-08
@@ -450,6 +449,7 @@ TDG,TransDigm Group,0001260221,Industrials,Aerospace & Defense,2016-06-03
 TRV,Travelers Companies (The),0000086312,Financials,Property & Casualty Insurance,2002-08-21
 TRMB,Trimble Inc.,0000864749,Information Technology,Application Software,2021-01-21
 TFC,Truist Financial,0000092230,Financials,Diversified Banks,1997-12-04
+TWLO,Twilio,0001447669,Information Technology,Systems Software,2026-10-06
 TYL,Tyler Technologies,0000860731,Information Technology,Application Software,2020-06-22
 TSN,Tyson Foods,0000100493,Consumer Staples,Packaged Foods & Meats,2005-08-10
 USB,U.S. Bancorp,0000036104,Financials,Diversified Banks,1999-11-01
@@ -477,12 +477,12 @@ V,Visa Inc.,0001403161,Financials,Transaction & Payment Processing Services,2009
 VST,Vistra Corp.,0001692819,Utilities,Electric Utilities,2024-05-08
 VMRK,Vivmark Residential,0000906107,Real Estate,Multi-Family Residential REITs,2001-12-03
 VMC,Vulcan Materials Company,0001396009,Materials,Construction Materials,1999-06-30
+VYLR,Vylor,0002128626,Consumer Staples,Agricultural Products & Services,2026-10-01
 WRB,W. R. Berkley Corporation,0000011544,Financials,Property & Casualty Insurance,2019-12-05
 GWW,W. W. Grainger,0000277135,Industrials,Industrial Machinery & Supplies & Components,1981-06-30
 WAB,Wabtec,0000943452,Industrials,Construction Machinery & Heavy Transportation Equipment,2019-02-27
 WMT,Walmart,0000104169,Consumer Staples,Consumer Staples Merchandise Retail,1982-08-31
 DIS,Walt Disney Company (The),0001744489,Communication Services,Movies & Entertainment,1976-06-30
-WBD,Warner Bros. Discovery,0001437107,Communication Services,Broadcasting,2022-04-11
 WM,Waste Management,0000823768,Industrials,Environmental & Facilities Services,1998-08-31
 WAT,Waters Corporation,0001000697,Health Care,Life Sciences Tools & Services,2002-01-02
 WEC,WEC Energy Group,0000783325,Utilities,Electric Utilities,2008-10-31
