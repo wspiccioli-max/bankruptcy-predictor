@@ -374,18 +374,17 @@ PG,Procter & Gamble,0000080424,Consumer Staples,Personal Care Products,1957-03-0
 PGR,Progressive Corporation,0000080661,Financials,Property & Casualty Insurance,1997-08-04
 PLD,Prologis,0001045609,Real Estate,Industrial REITs,2003-07-17
 PRU,Prudential Financial,0001137774,Financials,Life & Health Insurance,2002-07-22
-PEG,Public Service Enterprise Group,0000788784,Utilities,Electric Utilities,1957-03-04
 PTC,PTC Inc.,0000857005,Information Technology,Application Software,2021-04-20
+PEG,Public Service Enterprise Group,0000788784,Utilities,Electric Utilities,1957-03-04
 PSA,Public Storage,0001393311,Real Estate,Self-Storage REITs,2005-08-19
 PHM,PulteGroup,0000822416,Consumer Discretionary,Homebuilding,1984-04-30
-PWR,Quanta Services,0001050915,Industrials,Construction & Engineering,2009-07-01
-QCOM,Qualcomm,0000804328,Information Technology,Semiconductors,1999-07-22
-DGX,Quest Diagnostics,0001022079,Health Care,Health Care Services,2002-12-12
 Q,Qnity Electronics,0002058873,Information Technology,Semiconductor Materials & Equipment,2025-11-03
+QCOM,Qualcomm,0000804328,Information Technology,Semiconductors,1999-07-22
+PWR,Quanta Services,0001050915,Industrials,Construction & Engineering,2009-07-01
+DGX,Quest Diagnostics,0001022079,Health Care,Health Care Services,2002-12-12
 RL,Ralph Lauren Corporation,0001037038,Consumer Discretionary,"Apparel, Accessories & Luxury Goods",2007-02-02
 RJF,Raymond James Financial,0000720005,Financials,Investment Banking & Brokerage,2017-03-20
 RDDT,Reddit,0001713445,Communication Services,Interactive Media & Services,2026-08-18
-RTX,RTX Corporation,0000101829,Industrials,Aerospace & Defense,1957-03-04
 O,Realty Income,0000726728,Real Estate,Retail REITs,2015-04-07
 REG,Regency Centers,0000910606,Real Estate,Retail REITs,2017-03-02
 REGN,Regeneron Pharmaceuticals,0000872589,Health Care,Biotechnology,2013-05-01
@@ -399,6 +398,7 @@ ROL,"Rollins, Inc.",0000084839,Industrials,Environmental & Facilities Services,2
 ROP,Roper Technologies,0000882835,Information Technology,Electronic Equipment & Instruments,2009-12-23
 ROST,Ross Stores,0000745732,Consumer Discretionary,Apparel Retail,2009-12-21
 RCL,Royal Caribbean Group,0000884887,Consumer Discretionary,"Hotels, Resorts & Cruise Lines",2014-12-05
+RTX,RTX Corporation,0000101829,Industrials,Aerospace & Defense,1957-03-04
 SPGI,S&P Global,0000064040,Financials,Financial Exchanges & Data,1957-03-04
 CRM,Salesforce,0001108524,Information Technology,Application Software,2008-09-15
 SNDK,Sandisk,0002023554,Information Technology,"Technology Hardware, Storage & Peripherals",2025-11-28
